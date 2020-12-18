@@ -1,0 +1,4 @@
+#! /bin/bash
+# Тесты запускаются В Docker контейнере backend
+# Для прогона тесток сервисы должны быть запущены
+docker exec -ti api-template-backend npm test $@

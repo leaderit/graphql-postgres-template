@@ -1,0 +1,40 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "tap -t120 test/**/*.test.js",
+    "start": "fastify start -l info server.js",
+    "dev": "fastify start -w -l info -P server.js"
+  },
+  "keywords": [],
+  "author": "Valerii Grazhdankin",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.0",
+    "body-parser": "^1.19.0",
+    "crypto": "^1.0.1",
+    "dotenv": "^8.2.0",
+    "fastify": "^3.9.1",
+    "fastify-autoload": "^1.0.0",
+    "fastify-axios": "^1.2.1",
+    "fastify-cors": "^4.1.0",
+    "fastify-plugin": "^1.5.0",
+    "fastify-redis": "^4.1.0",
+    "fastify-routes": "^3.0.1",
+    "fastify-socket.io": "0.0.4",
+    "fastify-static": "^3.3.0",
+    "ioredis": "^4.19.2",
+    "path": "^0.12.7",
+    "pm2": "^4.5.0",
+    "pump": "^3.0.0",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "tap": "^12.7.0"
+  }
+}

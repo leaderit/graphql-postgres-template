@@ -1,0 +1,2 @@
+#! /bin/bash
+docker exec -ti api-template-graphql hasura-cli $@

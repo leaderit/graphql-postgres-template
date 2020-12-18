@@ -1,0 +1,39 @@
+# Файл .env
+# Параметры виртуального сервера
+# Имя контейнера
+NAME=graphql-postgres-template
+
+# адрес виртуального хоста
+# Можно указать несколько хостов через запятую
+HOST=auth.local.ru
+
+# Почта для сертификатов letsencrypt и других настроек
+#EMAIL=foo@example.com
+
+# Имя внутренней сети Docker для проксирования
+#NET=nginx-proxy
+
+# Hasura GraphQL
+HASURA_AUTH_HOOK=http://backend:3000/api/auth/hasura
+HASURA_BACKEND_BASE_URL=http://backend:3000/api
+
+# CORS Configuration
+# Look at https://hasura.io/docs/1.0/graphql/core/deployment/graphql-engine-flags/config-examples.html#configure-cors
+#
+HASURA_GRAPHQL_CORS_DOMAIN="http://localhost:8080"
+
+# Secret for Access
+HASURA_ADMIN_SECRET=myadminsecretkey
+
+HASURA_PORT=8081
+HASURA_MIGRATIONS=./db/migrations
+HASURA_METADATA=./db/metadata
+
+#postgres 
+POSTGRES_PASSWORD=postgrespassword
+PGADMIN_DEFAULT_EMAIL=admin@centerstruve.com
+PGADMIN_DEFAULT_PASSWORD=admin
+PGADMIN_PORT=5051
+
+#redis
+REDIS_PORT=6379
