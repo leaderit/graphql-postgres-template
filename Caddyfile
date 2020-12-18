@@ -1,0 +1,5 @@
+
+# replace :80 with your domain name to get automatic https via LetsEncrypt
+:80 {
+  reverse_proxy graphql-engine:8080
+}

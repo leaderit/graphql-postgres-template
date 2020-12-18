@@ -1,3 +1,11 @@
+# db
+db/postgres/*
+db/redis/*
+
+# Env
+.env
+.DS_Store
+
 # Logs
 logs
 *.log

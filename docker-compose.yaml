@@ -1,0 +1,146 @@
+version: '3.6'
+services:
+
+  # REDIS
+  redis:
+    container_name: ${NAME}-redis
+    image: redis:alpine
+    ports:
+        - ${REDIS_PORT}:6379
+    # задаем место для сохранения БД
+    volumes:
+        - ./db/redis:/data:cached
+        - ./img/redis/redis-local.conf:/etc/redis-local.conf
+
+  # POSTGRES
+  postgres:
+    container_name: ${NAME}-postgres
+    #image: postgres:12
+    build: ./img/postgres
+    restart: always
+    ports:
+    - 5432:5432
+    volumes:
+    - ./db/postgres:/var/lib/postgresql/data
+    environment:
+      # default USER postgres
+      #POSTGRES_USER: certs
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      #POSTGRES_DB: certs
+
+  # PGADMIN
+  pgadmin:
+    container_name: ${NAME}-pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    depends_on:
+    - postgres
+    ports:
+    - ${PGADMIN_PORT}:80
+    ## you can change pgAdmin default username/password with below environment variables
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    
+  # GRAPHQL
+  graphql-engine:
+    container_name: ${NAME}-graphql
+    # image: hasura/graphql-engine:v1.3.3
+    image: hasura/graphql-engine:v1.3.3.cli-migrations-v2
+    ports:
+    - ${HASURA_PORT}:8080
+    depends_on:
+    - postgres
+    restart: always
+    volumes:
+      - ./db/migrations:/migrations
+      - ./db/metadata:/metadata
+      - ./db/seeds:/seeds
+      - ./db/config.yaml:/config.yaml
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+
+      # Период передачи обновлений по подписке, сек
+      HASURA_GRAPHQL_LIVE_QUERIES_MULTIPLEXED_REFETCH_INTERVAL: 1
+
+      ## Закоментировать для продукта
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
+      HASURA_GRAPHQL_LOG_LEVEL: "warn" # debug, info, warn, error.
+
+      ## 
+      HASURA_GRAPHQL_CORS_DOMAIN: ${HASURA_GRAPHQL_CORS_DOMAIN}
+      # HASURA_GRAPHQL_ENDPOINT: http://graphql-engine:8080
+
+      ## Можно закомментировать для отладки без пароля
+      ## Для продакшена поставить очень длинный пароль
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_ADMIN_SECRET}
+
+      ## Путь указать по адресу сети docker или физическому адресу машины при отладке, не localhost!!!
+      HASURA_GRAPHQL_AUTH_HOOK: ${HASURA_AUTH_HOOK}
+      HASURA_GRAPHQL_AUTH_HOOK_MODE: GET
+
+      ## Пути к каталогам миграций и метаданных
+      # HASURA_GRAPHQL_MIGRATIONS_DIR: /migrations # ${HASURA_MIGRATIONS}
+      # HASURA_GRAPHQL_METADATA_DIR: /metadata # ${HASURA_METADATA}
+
+      ## БИЗНЕС-ЛОГИКА
+      ## Пути к обработчикам настраиваемых запросов
+      BACKEND_BASE_URL: ${HASURA_BACKEND_BASE_URL}
+      ## Путь к обработчику ваторизации
+      AUTH_BASE_URL: ${HASURA_BACKEND_BASE_URL}/auth
+      ## Путь к обработчику настраиваемых запросов Query/Mutation
+      ACTIONS_BASE_URL: ${HASURA_BACKEND_BASE_URL}/actions
+      ## Путь к обработчику событий
+      EVENTS_BASE_URL: ${HASURA_BACKEND_BASE_URL}/events
+      ## Путь к обработчику событий по времени
+      CRON_BASE_URL: ${HASURA_BACKEND_BASE_URL}/cron
+    command:
+    - graphql-engine
+    - serve
+
+  # NODEJS BACKEND 
+  backend:
+    container_name: ${NAME}-backend
+    #image: postgres:12
+    build: 
+      context: ./server
+      args:
+        ARG: "Value"
+    restart: always
+    ports:
+    - 3003:3000
+    # - 9229:9229 # inspector debug interface
+    volumes:
+    - ./server:/server
+    environment:
+      # Внутренний адрес для прямых запросов из бэкенда 
+      HASURA: http://graphql-engine:8080/v1/graphql
+      ORIGIN: http://graphql-engine:8080 
+      # http://localhost:3000 https://localhost:3000 http://dev2x.leaderit.ru
+      # default NODE enviroment
+      NODE_ENV: development # production
+    # Для разработки
+    command: pm2-runtime server.js --watch --ignore-watch="node_modules"
+    # command: node --inspect=0.0.0.0:9229 server.js
+
+  # HTTPS PROXY
+  # caddy:
+  #   image: caddy/caddy
+  #   container_name: ${NAME}-caddy
+  #   depends_on:
+  #   - "graphql-engine"
+  #   restart: always
+  #   ports:
+  #   - "80:80"
+  #   - "443:443"
+  #   volumes:
+  #   - ./Caddyfile:/etc/caddy/Caddyfile
+  #   - caddy_certs:/root/.caddy
+
+volumes:
+  db_data:
+  caddy_certs:
+
