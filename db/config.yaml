@@ -1,0 +1,8 @@
+version: 2
+endpoint: http://graphql-engine:8080
+metadata_directory: ./metadata
+migrations_directory: ./migrations
+enableTelemetry: false
+actions:
+  kind: synchronous
+  handler_webhook_baseurl: http://backend:3000/api

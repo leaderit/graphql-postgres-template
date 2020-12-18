@@ -1,0 +1,61 @@
+actions:
+- name: hello
+  definition:
+    kind: ""
+    handler: '{{ACTIONS_BASE_URL}}/hello'
+  permissions:
+  - role: anonymous
+- name: login
+  definition:
+    kind: ""
+    handler: '{{AUTH_BASE_URL}}/login'
+  permissions:
+  - role: anonymous
+  - role: user
+- name: logout
+  definition:
+    kind: ""
+    handler: '{{AUTH_BASE_URL}}/logout'
+    forward_client_headers: true
+  permissions:
+  - role: user
+- name: profile
+  definition:
+    kind: ""
+    handler: '{{AUTH_BASE_URL}}/profile'
+  permissions:
+  - role: user
+- name: token
+  definition:
+    kind: ""
+    handler: '{{AUTH_BASE_URL}}/token'
+  permissions:
+  - role: anonymous
+  - role: user
+custom_types:
+  enums: []
+  input_objects:
+  - name: LoginInput
+  - name: LogoutInput
+  objects:
+  - name: HelloOutput
+  - name: Profile
+    relationships:
+    - remote_table:
+        schema: public
+        name: users
+      name: user
+      type: object
+      field_mapping:
+        user_id: id
+  - name: LogoutOutput
+  - name: ProfileOutput
+    relationships:
+    - remote_table:
+        schema: public
+        name: users
+      name: user
+      type: object
+      field_mapping:
+        user_id: id
+  scalars: []

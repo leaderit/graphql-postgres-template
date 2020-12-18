@@ -1,0 +1,3 @@
+# !/bin/bash
+
+docker exec -i cert-postgres psql -U postgres certs < db.sql

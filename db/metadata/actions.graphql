@@ -1,0 +1,70 @@
+type Query {
+  hello : HelloOutput
+}
+
+
+type Query {
+  login (
+    grant_type: String
+    scope: String
+    client_id: String
+    client_secret: String
+    username: String!
+    password: String!
+  ): Profile
+}
+
+
+type Query {
+  logout : LogoutOutput
+}
+
+
+type Query {
+  profile : ProfileOutput
+}
+
+
+type Query {
+  token (
+    client: String
+    client_secret: String
+    refresh_token: String
+  ): Profile
+}
+
+
+
+
+input LoginInput {
+  username : String!
+  password : String!
+}
+
+input LogoutInput {
+  accessToken : String!
+}
+
+type HelloOutput {
+  greeting : String!
+}
+
+type Profile {
+  success : Boolean
+  error : String
+  access_token : String
+  refresh_token : String
+  token_type : String
+  expires_in : Int
+  user_id : uuid
+}
+
+type LogoutOutput {
+  success : Boolean
+  error : String
+}
+
+type ProfileOutput {
+  user_id : uuid
+}
+

@@ -1,0 +1,3 @@
+INSERT INTO public.users (id, name, login, created_at, updated_at, password, role_id) VALUES ('9e74ce44-1ae6-11eb-ae92-8f6f1e8276cc', 'Name 1', 'login1', '2020-10-30 19:32:16.813256+00', '2020-11-15 17:21:57.438775+00', 'password1', 1000);
+INSERT INTO public.users (id, name, login, created_at, updated_at, password, role_id) VALUES ('89c9683c-1ae7-11eb-925a-dfa3b51e5f49', 'Name 2', 'login2', '2020-10-30 19:38:51.636241+00', '2020-12-08 07:37:29.397829+00', NULL, 1000);
+INSERT INTO public.users (id, name, login, created_at, updated_at, password, role_id) VALUES ('af2a9296-3a44-11eb-a2cf-635754916116', 'Admin', 'admin', '2020-10-30 19:32:16.813256+00', '2020-11-15 17:21:57.438775+00', 'password', 1);
