@@ -1,6 +1,0 @@
-# !/bin/bash
-
-docker exec -ti cert-postgres pg_dump -U postgres postgres >db.sql
-
-
-
