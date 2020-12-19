@@ -83,6 +83,8 @@ async function login( fastify, request, reply ) {
         headers: {
             'X-Hasura-Login': user.username,
             'X-Hasura-Password': user.password,
+            'X-Hasura-Client': user.client_id,
+            'X-Hasura-Client-Secret': user.client_secret,
         }
     })
     if ( data.data ) {

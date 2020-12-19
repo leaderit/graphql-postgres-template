@@ -29,11 +29,16 @@ async function hasuraAuth(fastify, request, reply){
           "X-Hasura-Token": token || '',
       }
   }    
+  // Anonymous access level for login and refresh token actions
   return {
       "X-Hasura-User-Id": "",
       "X-Hasura-Role": "anonymous",
+      // Users Access
       "X-Hasura-Login": request.headers['x-hasura-login'] || '',
-      "X-Hasura-Password": request.headers['x-hasura-password'] || ''
+      "X-Hasura-Password": request.headers['x-hasura-password'] || '',
+      // Applications Access
+      "X-Hasura-Client": request.headers['x-hasura-client'] || '',
+      "X-Hasura-Client-Secret": request.headers['x-hasura-client-secret'] || ''
   }
 }
 
