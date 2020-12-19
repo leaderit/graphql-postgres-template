@@ -1,5 +1,7 @@
+# common
+!.gitkeep
 # db
-db/postgres/*
+db/postgres/* 
 db/redis/*
 db/postgres.0/*
 db/redis.0/*
