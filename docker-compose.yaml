@@ -18,15 +18,16 @@ services:
     #image: postgres:12
     build: ./img/postgres
     restart: always
+    # uncomment only if you are want to access to the postgres from outside
     ports:
     - 5432:5432
     volumes:
     - ./db/postgres:/var/lib/postgresql/data
     environment:
       # default USER postgres
-      #POSTGRES_USER: certs
+      POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      #POSTGRES_DB: certs
+      POSTGRES_DB: ${POSTGRES_DB}
 
   # PGADMIN
   pgadmin:
@@ -58,7 +59,7 @@ services:
       - ./db/seeds:/seeds
       - ./db/config.yaml:/config.yaml
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
+      HASURA_GRAPHQL_DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
 
