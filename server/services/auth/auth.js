@@ -57,7 +57,7 @@ async function login( fastify, request, reply ) {
     const { hasura } = fastify
     const { redis } = fastify
     const { tokenLife } = fastify
-    const user  = request.body.input
+    const login  = request.body.input
 
     const { data } = await hasura('', {
         query: //userLogin,
@@ -73,29 +73,34 @@ async function login( fastify, request, reply ) {
                   name
                 }          
             }
+            applications {
+                id
+                client_id
+            }            
           }
         `,
         variables: {
-            login: user.username,
-            password: user.password
+            login: login.username,
+            password: login.password
         }
     }, {
         headers: {
-            'X-Hasura-Login': user.username,
-            'X-Hasura-Password': user.password,
-            'X-Hasura-Client': user.client_id,
-            'X-Hasura-Client-Secret': user.client_secret,
+            'X-Hasura-Login': login.username,
+            'X-Hasura-Password': login.password,
+            'X-Hasura-Client': login.client_id,
+            'X-Hasura-Client-Secret': login.client_secret,
         }
     })
     if ( data.data ) {
-        if ( data.data.users.length == 1 ) {
-
+        if ( data.data.users.length == 1 && data.data.applications.length == 1 ) {
             const user = data.data.users[0]
             const token = crypto.randomBytes(32).toString('hex')
             const refreshToken = crypto.randomBytes(32).toString('hex')
 
             await deleteSession( fastify, user )
             user.role = user.role || { name:'user', id: 1000, access: {} }
+            user.scope = login.scope
+            user.application = data.data.applications[0]
             
             //  Установим сессию в Redis
             return await createSession( fastify, user )    

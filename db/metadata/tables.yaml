@@ -1,5 +1,22 @@
 - table:
     schema: public
+    name: applications
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - client_id
+      - client_secret
+      - id
+      filter:
+        _and:
+        - client_id:
+            _eq: X-Hasura-Client
+        - client_secret:
+            _eq: X-Hasura-Client-Secret
+      limit: 1
+- table:
+    schema: public
     name: roles
   array_relationships:
   - name: users
