@@ -1,0 +1,14 @@
+# !/bin/bash
+# !/bin/bash
+NAME=$(grep "^NAME=" .env | sed "s/NAME=//")
+POSTGRES_DB=$(grep "^POSTGRES_DB=" .env | sed "s/POSTGRES_DB=//")
+POSTGRES_USER=$(grep "^POSTGRES_USER=" .env | sed "s/POSTGRES_USER=//")
+POSTGRES_PASSWORD=$(grep "^POSTGRES_PASSWORD=" .env | sed "s/POSTGRES_PASSWORD=//")
+
+if [ -z $1  ]
+then
+    echo 'Usage: db-restore [backed-up.sql]'
+    echo 'SQL file for restore is required!'
+else
+    docker exec -i $NAME-postgres psql -U $POSTGRES_USER ${POSTGRES_DB} < $1
+fi
