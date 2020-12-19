@@ -1,5 +1,3 @@
-# common
-!.gitkeep
 # db
 db/postgres/* 
 db/redis/*
@@ -114,3 +112,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+# common
+!.gitkeep
