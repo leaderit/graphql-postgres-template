@@ -1,4 +1,4 @@
-# GraphQL backend on PostgreSQL with Auth, Access rights and custom Business Logic
+# GraphQL backend based on PostgreSQL database with Auth, Access rights and custom Business Logic
 
 ## Введение
 
