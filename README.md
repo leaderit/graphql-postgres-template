@@ -46,12 +46,26 @@ SQL PostgreSQL и обработчика бизнес логики на базе
 
 ### Настройка базы данных
 
-После запуска сервисов будеет создана пстая база данных `PostgreSQL` в папке db/postgres
+После запуска сервисов будеет создана пустая база данных `PostgreSQL` в папке db/postgres
 и `Redis` в папке db/redis.
 
-Выполните загрузку метаданных и данных по умолчанию для тестирования, введя команды:
+Выполните создание таблиц, загрузку метаданных и данных по умолчанию для тестирования, 
+введя один команды:
 
-    ./hasura-cli ???
+    ./hasura-cli migrate apply
+    ./hasura-cli metadata apply
+    ./hasura-cli seeds apply
+
+Повторный запуск команд на существующей базе данных может вызвать ошибку.
+
+### Запуск тестов
+
+Для того, чтобы убедиться, что ваши настройки выполнены правильно и сервисы работают корректно
+запустите на настроенной базе занных тесты сервисов GraphQL API командой:
+
+    ./run-tests 
+
+Все тесты должны завершиться без ошибок.
 
 ### Роли и прива доступа
 
@@ -62,30 +76,19 @@ SQL PostgreSQL и обработчика бизнес логики на базе
 Стандартные роли при создании сервиса следующие.
 
 - admin
-- anonimous
+- anonymous
 - user
 
 Список ролей для назначения пользователям записан в таблице БД `roles`.
 Этот список должен совпадать со списком ролей, прописанных в Hasura.
 
+Вы можете добавить любые необходимые вам роли и настроить доступ к данным
+в зависимости от того, какую роль доступа имеет пользователь.
 
-In this folder you should define all the services that define the routes
-of your web application.
-Each service is a [Fastify
-plugin](https://www.fastify.io/docs/latest/Plugins/), it is
-encapsulated (it can have its own independent plugins) and it is
-typically stored in a file; be careful to group your routes logically,
-e.g. all `/users` routes in a `users.js` file. We have added
-a `root.js` file for you with a '/' root added.
+Номера ролей с 1 по 999 зарезервированы для системных целей. Используйте
+роли приложения начиная с номера 1000, который зарезервирован для 
+простого пользователя без дополнительных полномочий.
 
 ##  Продукт
 
-If a single file become too large, create a folder and add a `index.js` file there:
-this file must be a Fastify plugin, and it will be loaded automatically
-by the application. You can now add as many files as you want inside that folder.
-In this way you can create complex services within a single monolith,
-and eventually extract them.
 
-If you need to share functionality between services, place that
-functionality into the `plugins` folder, and share it via
-[decorators](https://www.fastify.io/docs/latest/Decorators/).
