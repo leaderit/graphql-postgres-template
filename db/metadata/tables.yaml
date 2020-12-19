@@ -17,6 +17,57 @@
       limit: 1
 - table:
     schema: public
+    name: files
+  object_relationships:
+  - name: org
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: orgs
+        column_mapping:
+          org_id: id
+  - name: owner
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: users
+        column_mapping:
+          owner_id: id
+- table:
+    schema: public
+    name: orgs
+  array_relationships:
+  - name: files
+    using:
+      foreign_key_constraint_on:
+        column: org_id
+        table:
+          schema: public
+          name: files
+  - name: users
+    using:
+      foreign_key_constraint_on:
+        column: org_id
+        table:
+          schema: public
+          name: orgusers
+- table:
+    schema: public
+    name: orgusers
+  object_relationships:
+  - name: org
+    using:
+      foreign_key_constraint_on: org_id
+  - name: role
+    using:
+      foreign_key_constraint_on: role_id
+  - name: user
+    using:
+      foreign_key_constraint_on: user_id
+- table:
+    schema: public
     name: roles
   array_relationships:
   - name: users
@@ -49,6 +100,14 @@
     schema: public
     name: users
   object_relationships:
+  - name: org
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: orgs
+        column_mapping:
+          org_id: id
   - name: role
     using:
       manual_configuration:
@@ -57,6 +116,45 @@
           name: roles
         column_mapping:
           role_id: id
+  array_relationships:
+  - name: files
+    using:
+      foreign_key_constraint_on:
+        column: owner_id
+        table:
+          schema: public
+          name: files
+  - name: orgs
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: orgs
+        column_mapping:
+          id: owner_id
+  - name: users
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          schema: public
+          name: orgusers
+  insert_permissions:
+  - role: orgadmin
+    permission:
+      check: {}
+      set:
+        org_id: x-hasura-Org-Id
+      columns:
+      - role_id
+      - login
+      - name
+      - password
+      - created_at
+      - updated_at
+      - id
+      - org_id
+      backend_only: false
   select_permissions:
   - role: anonymous
     permission:
@@ -76,18 +174,69 @@
             _eq: X-Hasura-Password
       limit: 1
       allow_aggregations: true
-  - role: user
+  - role: manager
+    permission:
+      columns: []
+      filter: {}
+  - role: orgadmin
     permission:
       columns:
-      - id
-      - name
+      - role_id
       - login
+      - name
+      - password
       - created_at
       - updated_at
+      - id
+      - org_id
+      filter: {}
+  - role: owner
+    permission:
+      columns:
+      - created_at
+      - id
+      - login
+      - name
+      - org_id
       - password
+      - role_id
+      - updated_at
       filter:
         id:
           _eq: X-Hasura-User-Id
+      limit: 1
+  - role: user
+    permission:
+      columns:
+      - created_at
+      - id
+      - login
+      - name
+      - org_id
+      - password
+      - role_id
+      - updated_at
+      filter:
+        id:
+          _eq: X-Hasura-User-Id
+  update_permissions:
+  - role: orgadmin
+    permission:
+      columns:
+      - role_id
+      - login
+      - name
+      - password
+      - created_at
+      - updated_at
+      - id
+      - org_id
+      filter: {}
+      check: null
+  delete_permissions:
+  - role: orgadmin
+    permission:
+      filter: {}
   event_triggers:
   - name: users
     definition:

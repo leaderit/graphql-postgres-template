@@ -1,10 +1,15 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "GraphQL backend custom business logic server",
   "main": "server.js",
   "directories": {
     "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/leaderit/graphql-postgres-template",
+    "directory": "server"
   },
   "scripts": {
     "test": "tap -t120 test/**/*.test.js",

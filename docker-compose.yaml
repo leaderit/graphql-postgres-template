@@ -20,7 +20,7 @@ services:
     restart: always
     # uncomment only if you are want to access to the postgres from outside
     ports:
-    - 5432:5432
+    - ${POSTGRES_PORT}:5432
     volumes:
     - ./db/postgres:/var/lib/postgresql/data
     environment:
