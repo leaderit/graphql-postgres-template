@@ -140,6 +140,38 @@
           schema: public
           name: orgusers
   insert_permissions:
+  - role: anonymous
+    permission:
+      check:
+        _and:
+        - _exists:
+            _where:
+              _and:
+              - client_id:
+                  _eq: X-Hasura-Client
+              - client_secret:
+                  _eq: X-Hasura-Client-Secret
+            _table:
+              schema: public
+              name: applications
+        - _not:
+            _exists:
+              _where:
+                login:
+                  _eq: X-Hasura-Login
+              _table:
+                schema: public
+                name: users
+      columns:
+      - id
+      - name
+      - login
+      - created_at
+      - updated_at
+      - password
+      - role_id
+      - org_id
+      backend_only: false
   - role: orgadmin
     permission:
       check: {}

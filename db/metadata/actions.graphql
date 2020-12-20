@@ -26,6 +26,19 @@ type Query {
 
 
 type Query {
+  register (
+    client_id: String
+    client_secret: String
+    org_id: uuid
+    scope: String
+    login: String!
+    password: String!
+    password2: String!
+  ): Profile
+}
+
+
+type Query {
   token (
     client: String
     client_secret: String
@@ -43,6 +56,14 @@ input LoginInput {
 
 input LogoutInput {
   accessToken : String!
+}
+
+input RegisterInput {
+  client_id : String
+  client_secret : String
+  scope : String
+  username : String!
+  password : String!
 }
 
 type HelloOutput {
@@ -66,5 +87,9 @@ type LogoutOutput {
 
 type ProfileOutput {
   user_id : uuid
+}
+
+type RegisterOutput {
+  accessToken : String!
 }
 

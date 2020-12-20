@@ -25,6 +25,13 @@ actions:
     handler: '{{AUTH_BASE_URL}}/profile'
   permissions:
   - role: user
+- name: register
+  definition:
+    kind: ""
+    handler: '{{AUTH_BASE_URL}}/register'
+    forward_client_headers: true
+  permissions:
+  - role: anonymous
 - name: token
   definition:
     kind: ""
@@ -37,6 +44,7 @@ custom_types:
   input_objects:
   - name: LoginInput
   - name: LogoutInput
+  - name: RegisterInput
   objects:
   - name: HelloOutput
   - name: Profile
@@ -58,4 +66,5 @@ custom_types:
       type: object
       field_mapping:
         user_id: id
+  - name: RegisterOutput
   scalars: []
