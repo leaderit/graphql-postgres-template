@@ -1,5 +1,6 @@
 'use strict'
 const crypto = require('crypto')
+const auth = require('../../gql/auth.gql')
 
 //  Создание сессии в Redis
 async function createSession( fastify, user )
@@ -94,8 +95,8 @@ async function login( fastify, request, reply ) {
     if ( data.data ) {
         if ( data.data.users.length == 1 && data.data.applications.length == 1 ) {
             const user = data.data.users[0]
-            const token = crypto.randomBytes(32).toString('hex')
-            const refreshToken = crypto.randomBytes(32).toString('hex')
+            // const token = crypto.randomBytes(32).toString('hex')
+            // const refreshToken = crypto.randomBytes(32).toString('hex')
 
             await deleteSession( fastify, user )
             user.role = user.role || { name:'user', id: 1000, access: {} }
@@ -120,7 +121,7 @@ async function logout( fastify, request, reply ){
     const { user } = request
     const { token } = request
 
-    console.log('logout()= ', { user, token } )
+    // console.log('logout()= ', { user, token } )
     if ( await deleteSession( fastify, user ) ) 
     {
         return { success: true }
@@ -202,6 +203,102 @@ async function token(fastify, request, reply){
     }    
 }
 
+
+// Создает и возвращает профиль пользователя
+async function register(fastify, request, reply){
+    const { hasura } = fastify
+    const { redis } = fastify
+    const { tokenLife } = fastify
+    const register  = request.body.input
+
+    // console.log( {register} )
+    if ( register.password === register.password2 ) {
+        console.log('password ok')
+    }
+
+    const app = await hasura('', {
+        query: //auth.Application,
+        `
+        query Application($client_id: String!, $client_secret: String!) {
+            applications (where: {client_id: {_eq: $client_id}, client_secret: {_eq: $client_secret}}, limit: 1)
+            {
+                id
+                client_id
+            }            
+          }
+        `,
+        variables: {
+            client_id: register.client_id,
+            client_secret: register.client_secret
+        }
+    }, {
+        headers: {
+            'X-Hasura-Client': register.client_id,
+            'X-Hasura-Client-Secret': register.client_secret,
+        }
+    })
+
+    var application = null
+    if ( app.data ) application = app.data.data.applications[0]
+
+    console.log( { application } )
+
+
+    const { data } = await hasura('', {
+        query: 
+        `
+        mutation Register (
+            $login: String!
+            $name: String!
+            $password: String!
+        ){
+            insert_users_one( object: {
+                login: $login, 
+                name: $name, 
+                password: $password
+            }) {
+                id
+                login
+                name
+                role {
+                  access
+                  id
+                  name
+                }          
+            }
+        }
+        `,
+        variables: {
+            login: register.login,
+            name: register.login,
+            password: register.password
+        }
+    }, {
+        headers: {
+            'X-Hasura-Login': register.login,
+            'X-Hasura-Password': register.password,
+            'X-Hasura-Client': register.client_id,
+            'X-Hasura-Client-Secret': register.client_secret,
+        }
+    })
+
+    if ( data.data ) {
+        if ( data.data.insert_users_one && application ) {
+            const user = data.data.insert_users_one
+            user.role = user.role || { name:'user', id: 1000, access: {} }
+            user.scope = register.scope
+            user.application = application
+            
+            //  Установим сессию в Redis
+            return await createSession( fastify, user )    
+        }
+    }
+    return { 
+        success: false, 
+        error: 'incorrect user name or password'
+    }  
+}
+
 module.exports = function (fastify, opts, next) {
     const { hasura } = fastify
 
@@ -227,6 +324,11 @@ module.exports = function (fastify, opts, next) {
     fastify.post('/token', async function (request, reply) 
     {
       reply.send( await token(fastify, request, reply) )
+    })
+
+    fastify.post('/register', async function (request, reply) 
+    {
+      reply.send( await register(fastify, request, reply) )
     })
 
     next()
