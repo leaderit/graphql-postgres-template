@@ -14,8 +14,7 @@ Login:
       password: $password, 
       username: $username, 
       client_id: $client_id, 
-      client_secret: 
-      $client_secret, 
+      client_secret: $client_secret, 
       scope: $scope
     ){
       access_token
@@ -82,6 +81,53 @@ Token:
       user_id
     }
   }
+  `,
+  ///
+  Register:
+  `
+  query Register(
+    $login: String!, 
+    $password: String!, 
+    $password2: String!, 
+    $scope: String = "", 
+    $client_secret: String = "", 
+    $client_id: String = ""
+    $org_id: uuid
+  ){
+    register ( 
+      login: $login, 
+      password: $password,
+      password2: $password2,  
+      client_id: $client_id, 
+      client_secret: $client_secret, 
+      scope: $scope
+      org_id: $org_id
+    ){
+      access_token
+      refresh_token
+      success
+      error
+      user_id
+      user {
+        id
+        login
+        name
+        password
+      }
+      expires_in
+      token_type
+    }
+  }
+  `,
+  ///
+  Unregister:
+  `
+  query Unregister {
+    unregister {
+      error
+      success
+    }
+  }  
   `
 }
 

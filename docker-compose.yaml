@@ -38,10 +38,13 @@ services:
     - postgres
     ports:
     - ${PGADMIN_PORT}:80
+    volumes:
+    - ./img/pgadmin/servers.json:/servers.json
     ## you can change pgAdmin default username/password with below environment variables
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_SERVER_JSON_FILE: /servers.json
     
   # GRAPHQL
   graphql-engine:

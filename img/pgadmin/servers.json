@@ -1,0 +1,14 @@
+
+{
+    "Servers": {
+        "1": {
+            "Name": "GraphQL database server",
+            "Group": "GraphQL",
+            "Port": 5432,
+            "Username": "api_admin",
+            "Host": "postgres",
+            "SSLMode": "prefer",
+            "MaintenanceDB": "postgres"
+        }
+    }
+}

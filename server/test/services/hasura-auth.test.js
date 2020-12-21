@@ -1,42 +1,35 @@
 'use strict'
 
+const helper = require('../helper')
 const { test } = require('tap')
-const { build } = require('../helper')
-const { config } = require('../helper')
-const Axios = require ('axios')
+const backend = helper.backend
 
-test('auth is loaded', async (t) => {
+test('Test Hasura Auth Callback', async (t) => {
   const user = {
     username:'login1',
     password:'password1'
   }
-  const baseURL = 'http://backend:3000/api'
-  const GraphQL = 'http://graphql-engine:8080/v1/graphql'
   var res
-  // t.plan(3)
-  const axios = Axios.create({
-    baseURL,
-    timeout: 1000,
-  });
-
-  res = await axios.get( '/auth/hasura',
+  
+  res = await backend.get( '/auth/hasura',
   {
     headers: {
       'x-hasura-login':user.username,
       'x-hasura-password':user.password
     },
   })
-  
+
   t.equal(res.status, 200 )
   t.same(res.data, 
     {
       'X-Hasura-User-Id': '',
       'X-Hasura-Role': 'anonymous',
       'X-Hasura-Login': user.username,
-      'X-Hasura-Password': user.password
+      'X-Hasura-Password': user.password,
+      'X-Hasura-Client':'',
+      'X-Hasura-Client-Secret':''
     }    
   )
 
   t.end()
-
 })

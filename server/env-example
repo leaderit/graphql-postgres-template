@@ -1,6 +1,6 @@
 PROTOCOL=http
+# Работа в Docker + Hasura
 PORT=3000
-ADDRESS=192.168.143.156
-FASTIFY_ADDRESS=192.168.143.156
-ORIGIN=http://192.168.143.156:8080
-INIT_CWD=
+ADDRESS=0.0.0.0
+HASURA=http://hasura:8081/v1/graphql
+ORIGIN=http://localhost:3000 https://localhost:3000

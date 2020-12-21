@@ -95,14 +95,10 @@ async function login( fastify, request, reply ) {
     if ( data.data ) {
         if ( data.data.users.length == 1 && data.data.applications.length == 1 ) {
             const user = data.data.users[0]
-            // const token = crypto.randomBytes(32).toString('hex')
-            // const refreshToken = crypto.randomBytes(32).toString('hex')
-
             await deleteSession( fastify, user )
             user.role = user.role || { name:'user', id: 1000, access: {} }
             user.scope = login.scope
             user.application = data.data.applications[0]
-            
             //  Установим сессию в Redis
             return await createSession( fastify, user )    
         }
@@ -211,92 +207,128 @@ async function register(fastify, request, reply){
     const { tokenLife } = fastify
     const register  = request.body.input
 
-    // console.log( {register} )
     if ( register.password === register.password2 ) {
-        console.log('password ok')
-    }
+        const app = await hasura('', {
+            query: //auth.Application,
+            `
+            query Application($client_id: String!, $client_secret: String!) {
+                applications (where: {client_id: {_eq: $client_id}, client_secret: {_eq: $client_secret}}, limit: 1)
+                {
+                    id
+                    client_id
+                }            
+            }
+            `,
+            variables: {
+                client_id: register.client_id,
+                client_secret: register.client_secret
+            }
+        }, {
+            headers: {
+                'X-Hasura-Client': register.client_id,
+                'X-Hasura-Client-Secret': register.client_secret,
+            }
+        })
 
-    const app = await hasura('', {
-        query: //auth.Application,
-        `
-        query Application($client_id: String!, $client_secret: String!) {
-            applications (where: {client_id: {_eq: $client_id}, client_secret: {_eq: $client_secret}}, limit: 1)
-            {
-                id
-                client_id
-            }            
-          }
-        `,
-        variables: {
-            client_id: register.client_id,
-            client_secret: register.client_secret
-        }
-    }, {
-        headers: {
-            'X-Hasura-Client': register.client_id,
-            'X-Hasura-Client-Secret': register.client_secret,
-        }
-    })
+        var application = null
+        if ( app.data ) application = app.data.data.applications[0]
+        const { data } = await hasura('', {
+            query: 
+            `
+            mutation Register (
+                $login: String!
+                $name: String!
+                $password: String!
+            ){
+                insert_users_one( object: {
+                    login: $login, 
+                    name: $name, 
+                    password: $password
+                }) {
+                    id
+                    login
+                    name
+                    role {
+                    access
+                    id
+                    name
+                    }          
+                }
+            }
+            `,
+            variables: {
+                login: register.login,
+                name: register.login,
+                password: register.password
+            }
+        }, {
+            headers: {
+                'X-Hasura-Login': register.login,
+                'X-Hasura-Password': register.password,
+                'X-Hasura-Client': register.client_id,
+                'X-Hasura-Client-Secret': register.client_secret,
+            }
+        })
 
-    var application = null
-    if ( app.data ) application = app.data.data.applications[0]
-
-    console.log( { application } )
-
-
-    const { data } = await hasura('', {
-        query: 
-        `
-        mutation Register (
-            $login: String!
-            $name: String!
-            $password: String!
-        ){
-            insert_users_one( object: {
-                login: $login, 
-                name: $name, 
-                password: $password
-            }) {
-                id
-                login
-                name
-                role {
-                  access
-                  id
-                  name
-                }          
+        if ( data.data ) {
+            if ( data.data.insert_users_one && application ) {
+                const user = data.data.insert_users_one
+                user.role = user.role || { name:'user', id: 1000, access: {} }
+                user.scope = register.scope
+                user.application = application
+                //  Установим сессию в Redis
+                return await createSession( fastify, user )    
             }
         }
-        `,
-        variables: {
-            login: register.login,
-            name: register.login,
-            password: register.password
-        }
-    }, {
-        headers: {
-            'X-Hasura-Login': register.login,
-            'X-Hasura-Password': register.password,
-            'X-Hasura-Client': register.client_id,
-            'X-Hasura-Client-Secret': register.client_secret,
-        }
-    })
-
-    if ( data.data ) {
-        if ( data.data.insert_users_one && application ) {
-            const user = data.data.insert_users_one
-            user.role = user.role || { name:'user', id: 1000, access: {} }
-            user.scope = register.scope
-            user.application = application
-            
-            //  Установим сессию в Redis
-            return await createSession( fastify, user )    
-        }
     }
+    // END password = password2
     return { 
         success: false, 
         error: 'incorrect user name or password'
     }  
+}
+
+
+// Удаляет профиль пользователя
+async function unregister(fastify, request, reply){
+    const { hasura } = fastify
+    const unregister  = request.body.input
+
+    var user = request.user
+    if ( user ) {
+        console.log( user, request.headers )
+        const { data } = await hasura('', {
+            query: 
+            `
+                mutation UnRegister($id: uuid!) {
+                    delete_users_by_pk(id: $id) {
+                        id
+                    }
+                }
+            `,
+            variables: {
+                id: user.id
+            }
+        }, {
+            headers: {
+                "Authorization": request.headers.authorization,
+            }
+        })
+        if ( data.data ) {
+            if ( data.data.delete_users_by_pk.id === user.id ) {
+                if ( await deleteSession( fastify, user ) ) 
+                {
+                    return { success: true }
+                }
+                return { success: false, error:'not logged in'} 
+            }           
+        }
+    }
+    return { 
+        success: false, 
+        error: 'incorrect user'
+    }  
+
 }
 
 module.exports = function (fastify, opts, next) {
@@ -329,6 +361,11 @@ module.exports = function (fastify, opts, next) {
     fastify.post('/register', async function (request, reply) 
     {
       reply.send( await register(fastify, request, reply) )
+    })
+
+    fastify.post('/unregister', async function (request, reply) 
+    {
+      reply.send( await unregister(fastify, request, reply) )
     })
 
     next()

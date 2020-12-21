@@ -12,7 +12,7 @@
     "directory": "server"
   },
   "scripts": {
-    "test": "tap -t120 test/**/*.test.js",
+    "test": "tap -t1800 test/**/*.test.js",
     "start": "fastify start -l info server.js",
     "dev": "fastify start -w -l info -P server.js"
   },
