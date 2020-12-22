@@ -1,6 +1,1 @@
-- name: minutes
-  webhook: '{{CRON_BASE_URL}}/minute'
-  schedule: 0 * * * *
-  include_in_metadata: true
-  payload:
-    data: info
+[]

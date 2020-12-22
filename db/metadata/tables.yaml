@@ -266,24 +266,21 @@
       filter: {}
       check: null
   delete_permissions:
+  - role: manager
+    permission:
+      filter:
+        id:
+          _eq: X-Hasura-User-Id
   - role: orgadmin
     permission:
       filter: {}
-  event_triggers:
-  - name: users
-    definition:
-      enable_manual: true
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
-        columns:
-        - login
-        - name
-        - password
-    retry_conf:
-      num_retries: 3
-      interval_sec: 10
-      timeout_sec: 5
-    webhook: '{{EVENTS_BASE_URL}}/user'
+  - role: owner
+    permission:
+      filter:
+        id:
+          _eq: X-Hasura-User-Id
+  - role: user
+    permission:
+      filter:
+        id:
+          _eq: X-Hasura-User-Id

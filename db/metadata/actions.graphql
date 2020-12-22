@@ -16,7 +16,7 @@ type Query {
 
 
 type Query {
-  logout : LogoutOutput
+  logout : Result
 }
 
 
@@ -44,6 +44,13 @@ type Query {
     client_secret: String
     refresh_token: String
   ): Profile
+}
+
+
+type Query {
+  unregister (
+    code: String
+  ): Result
 }
 
 
@@ -80,16 +87,16 @@ type Profile {
   user_id : uuid
 }
 
-type LogoutOutput {
-  success : Boolean
-  error : String
-}
-
 type ProfileOutput {
   user_id : uuid
 }
 
 type RegisterOutput {
   accessToken : String!
+}
+
+type Result {
+  success : Boolean
+  error : String
 }
 
