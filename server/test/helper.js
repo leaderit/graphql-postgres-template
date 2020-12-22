@@ -26,7 +26,7 @@ const backend = Axios.create({
 
 const _graphql = Axios.create({
   baseURL: GraphQLURL,
-  timeout: 10000,
+  timeout: 100000, // 0 = infinity timeout
   // headers: {'X-Custom-Header': 'foobar'}
 });
 
@@ -40,7 +40,7 @@ async function graphql( query, headers )
 } 
 
 const axios = Axios.create({
-  timeout: 10000,
+  timeout: 100000, // 0 = infinity timeout
   // headers: {'X-Custom-Header': 'foobar'}
 });
 

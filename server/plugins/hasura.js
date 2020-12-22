@@ -6,13 +6,16 @@ const fp = require('fastify-plugin')
 
 module.exports = fp( function (fastify, opts, next ) {
 
-    const axios = Axios.create({
-        baseURL: process.env.HASURA || 'http://localhost:8080/v1/graphql', 
-        timeout: 10000,
-        // Сюда можно добавить собственные постоянные заголовки
-        // headers: {'X-Custom-Header': 'foobar'}
-    });
-      
+    const cfg = { 
+        ...{ 
+            baseURL: 'http://graphql-engine:8080/v1/graphql',
+            timeout: 0,
+        },
+        ...opts.hasura
+    }
+
+    console.log( 'Hasura=', { cfg } )
+    const axios = Axios.create( cfg )     
     const hasura = axios.post
     fastify.decorate('hasura', hasura)
     next()
