@@ -25,7 +25,7 @@ async function createCode(fastify, request, reply){
 
     // send code here 
     // put code into sender queue
-    fastify.sendCode( user, operation, code )
+    // fastify.sendCode( user, operation, code )
     //
     
     return { 
