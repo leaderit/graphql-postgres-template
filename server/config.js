@@ -55,7 +55,8 @@ const config = {
     // Если обновление жетона (токена) производится менее чем за минимальное время жизни
     // возвращается тот же жетон (токен)
     minTokenLife : 15,
-    deleteSessionTimeout: 5
+    deleteSessionTimeout: 5,
+    codeLife: 240 // Время жизни кода подтверждения в секундах
   },
   redis: {
     host:'redis',

@@ -2,6 +2,10 @@
 const crypto = require('crypto')
 const auth = require('../../gql/auth.gql')
 
+function createToken() {
+    return crypto.randomBytes(32).toString('hex')
+}
+
 //  Создание сессии в Redis
 async function createSession( fastify, user )
 {
@@ -337,6 +341,7 @@ module.exports = function (fastify, opts, next) {
     fastify.decorate ( 'tokenLife', opts.auth.tokenLife || 0 )
     fastify.decorate ( 'minTokenLife', opts.auth.minTokenLife * 1000 || 10000 )
     fastify.decorate ( 'deleteSessionTimeout', opts.auth.deleteSessionTimeout || 5 )
+    fastify.decorate ( 'createToken', createToken )
 
     fastify.post('/login', async function (request, reply) 
     {
