@@ -14,7 +14,6 @@ module.exports = fp( function (fastify, opts, next ) {
         ...opts.hasura
     }
 
-    console.log( 'Hasura=', { cfg } )
     const axios = Axios.create( cfg )     
     const hasura = axios.post
     fastify.decorate('hasura', hasura)

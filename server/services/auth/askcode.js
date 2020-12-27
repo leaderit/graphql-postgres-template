@@ -4,6 +4,7 @@ const crypto = require('crypto')
 async function createCode(fastify, request, reply){
     const { redis } = fastify
     const { codeLife } = fastify
+    const { sendCode } = fastify
     // const { createToken } = fastify
     const { user } = request
 
@@ -25,7 +26,7 @@ async function createCode(fastify, request, reply){
 
     // send code here 
     // put code into sender queue
-    // fastify.sendCode( user, operation, code )
+    if ( fastify.hasDecorator('sendCode') ) await fastify.sendCode( user, action, code )
     //
     
     return { 
