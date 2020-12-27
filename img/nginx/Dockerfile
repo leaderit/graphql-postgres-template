@@ -82,7 +82,7 @@ RUN set -x \
     && apk add sed \
     && sed -i '1i \
     include /etc/nginx/modules/*.conf;\n \
-    \n'  /etc/nginx/nginx.conf 
+    '  /etc/nginx/nginx.conf 
     
 # ACTIVATE ADDITIONAL INSTALLED MODULES
 RUN set -x \

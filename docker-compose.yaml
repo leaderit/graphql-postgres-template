@@ -14,7 +14,6 @@ services:
       - redis
     # задаем файлы и папки
     volumes:
-        # - ./img/nginx/nginx.conf:/etc/nginx/nginx.conf
         - ./server/public:/usr/share/nginx/html
         - ./img/nginx/default.conf:/etc/nginx/conf.d/default.conf
         - ./img/nginx/proxy.conf:/etc/nginx/conf.d/proxy.conf
@@ -150,20 +149,6 @@ services:
     # Для разработки
     command: pm2-runtime server.js --watch --ignore-watch="node_modules"
     # command: node --inspect=0.0.0.0:9229 server.js
-
-  # HTTPS PROXY
-  # caddy:
-  #   image: caddy/caddy
-  #   container_name: ${NAME}-caddy
-  #   depends_on:
-  #   - "graphql-engine"
-  #   restart: always
-  #   ports:
-  #   - "80:80"
-  #   - "443:443"
-  #   volumes:
-  #   - ./Caddyfile:/etc/caddy/Caddyfile
-  #   - caddy_certs:/root/.caddy
 
 volumes:
   db_data:
