@@ -1,0 +1,5 @@
+# !/bin/sh
+docker-compose down
+docker image rm graphql-postgres-template_proxy
+docker-compose up -d --build
+
