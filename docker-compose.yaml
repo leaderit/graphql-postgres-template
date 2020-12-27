@@ -1,12 +1,33 @@
 version: '3.6'
 services:
+  # PROXY
+  proxy:
+    container_name: ${NAME}-proxy
+    # image: nginx:latest
+    build: ./img/nginx
+    ports:
+        - 8088:80
+    depends_on:
+      - graphql-engine
+      - backend
+      - pgadmin
+      - redis
+    # задаем файлы и папки
+    volumes:
+        # - ./img/nginx/nginx.conf:/etc/nginx/nginx.conf
+        - ./server/public:/usr/share/nginx/html
+        - ./img/nginx/default.conf:/etc/nginx/conf.d/default.conf
+        - ./img/nginx/proxy.conf:/etc/nginx/conf.d/proxy.conf
+    environment:
+    # - NGINX_HOST=foobar.com
+    - NGINX_PORT=80        
 
   # REDIS
   redis:
     container_name: ${NAME}-redis
     image: redis:alpine
     ports:
-        - ${REDIS_PORT}:6379
+      - ${REDIS_PORT}:6379
     # задаем место для сохранения БД
     volumes:
         - ./db/redis:/data:cached
@@ -51,8 +72,8 @@ services:
     container_name: ${NAME}-graphql
     # image: hasura/graphql-engine:v1.3.3
     image: hasura/graphql-engine:v1.3.3.cli-migrations-v2
-    ports:
-    - ${HASURA_PORT}:8080
+    # ports:
+    # - ${HASURA_PORT}:8080
     depends_on:
     - postgres
     restart: always
@@ -114,8 +135,8 @@ services:
       args:
         ARG: "Value"
     restart: always
-    ports:
-    - 3003:3000
+    # ports:
+    # - 3003:3000
     # - 9229:9229 # inspector debug interface
     volumes:
     - ./server:/server
