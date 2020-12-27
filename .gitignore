@@ -6,6 +6,10 @@ db/redis/*
 .env
 .DS_Store
 
+#server
+server/public/tmp
+server/public/*.html
+
 # Logs
 logs
 *.log
