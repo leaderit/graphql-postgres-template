@@ -6,6 +6,17 @@ function createToken() {
     return crypto.randomBytes(32).toString('hex')
 }
 
+// Создание соли
+function createSalt() {
+    return crypto.randomBytes(128).toString('base64')
+}
+
+// Функция вычисления хеша для имени, пароля и соли
+function passwordHash( login, password, salt ) {
+    return crypto.pbkdf2Sync(password+login, salt, 10000, 128, 'sha512').toString('base64')
+}
+
+
 //  Создание сессии в Redis
 async function createSession( fastify, user )
 {
@@ -62,16 +73,25 @@ async function login( fastify, request, reply ) {
     const { hasura } = fastify
     const { redis } = fastify
     const { tokenLife } = fastify
+    const { backendSecret } = fastify
     const login  = request.body.input
+
+    console.log('LOGIN!!!')
+    console.log({ loginBS: backendSecret })
+
+    //const salt = createSalt()
+    //const pwHash = passwordHash( register.login, register.password, salt )
 
     const { data } = await hasura('', {
         query: //userLogin,
         `
-        query getUser($password: String!, $login: String!) {
-            users (where: {password: {_eq: $password}, login: {_eq: $login}}, limit: 1) {
+        query getUser($login: String!) {
+            users (where: {login: {_eq: $login}}, limit: 1) {
                 id
                 login
                 name
+                password
+                salt
                 role {
                   access
                   id
@@ -85,8 +105,7 @@ async function login( fastify, request, reply ) {
           }
         `,
         variables: {
-            login: login.username,
-            password: login.password
+            login: login.username
         }
     }, {
         headers: {
@@ -94,17 +113,24 @@ async function login( fastify, request, reply ) {
             'X-Hasura-Password': login.password,
             'X-Hasura-Client': login.client_id,
             'X-Hasura-Client-Secret': login.client_secret,
+            'X-Hasura-Backend': backendSecret
         }
     })
     if ( data.data ) {
         if ( data.data.users.length == 1 && data.data.applications.length == 1 ) {
             const user = data.data.users[0]
-            await deleteSession( fastify, user )
-            user.role = user.role || { name:'user', id: 1000, access: {} }
-            user.scope = login.scope
-            user.application = data.data.applications[0]
-            //  Установим сессию в Redis
-            return await createSession( fastify, user )    
+            // Проверить хеш пароля 
+            let password = login.password
+            if ( user.salt ) password = passwordHash( login.username, login.password, user.salt )
+            if ( !(user.password === password)) user = null
+            if ( user ) {
+                await deleteSession( fastify, user )
+                user.role = user.role || { name:'user', id: 1000, access: {} }
+                user.scope = login.scope
+                user.application = data.data.applications[0]
+                //  Установим сессию в Redis
+                return await createSession( fastify, user )
+            }
         }
     }
     // reply.statusCode = 401
@@ -210,8 +236,13 @@ async function register(fastify, request, reply){
     const { redis } = fastify
     const { tokenLife } = fastify
     const register  = request.body.input
+    const { backendSecret } = fastify
 
+    console.log('REGISTER')
+    // Проверяем совпадение паролей
     if ( register.password === register.password2 ) {
+
+        // Проверяем регистрацию приложения
         const app = await hasura('', {
             query: //auth.Application,
             `
@@ -231,11 +262,18 @@ async function register(fastify, request, reply){
             headers: {
                 'X-Hasura-Client': register.client_id,
                 'X-Hasura-Client-Secret': register.client_secret,
+                'X-Hasura-Backend': backendSecret
             }
         })
 
         var application = null
         if ( app.data ) application = app.data.data.applications[0]
+
+        const salt = createSalt()
+        const pwHash = passwordHash( register.login, register.password, salt )
+
+        console.log( {application} )
+        // Записываем пользователя и пароль
         const { data } = await hasura('', {
             query: 
             `
@@ -243,11 +281,13 @@ async function register(fastify, request, reply){
                 $login: String!
                 $name: String!
                 $password: String!
+                $salt: String!
             ){
                 insert_users_one( object: {
                     login: $login, 
                     name: $name, 
-                    password: $password
+                    password: $password,
+                    salt: $salt
                 }) {
                     id
                     login
@@ -263,7 +303,8 @@ async function register(fastify, request, reply){
             variables: {
                 login: register.login,
                 name: register.login,
-                password: register.password
+                password: pwHash,
+                salt: salt
             }
         }, {
             headers: {
@@ -271,6 +312,7 @@ async function register(fastify, request, reply){
                 'X-Hasura-Password': register.password,
                 'X-Hasura-Client': register.client_id,
                 'X-Hasura-Client-Secret': register.client_secret,
+                'X-Hasura-Backend': backendSecret
             }
         })
 
@@ -338,6 +380,7 @@ async function unregister(fastify, request, reply){
 module.exports = function (fastify, opts, next) {
     const { hasura } = fastify
 
+    // НЕ ПЛАГИН - ДЕКОРАТОРЫ РАБОТАТЬ НЕ БУДУТ - исправить!!! 
     fastify.decorate ( 'tokenLife', opts.auth.tokenLife || 0 )
     fastify.decorate ( 'minTokenLife', opts.auth.minTokenLife * 1000 || 10000 )
     fastify.decorate ( 'deleteSessionTimeout', opts.auth.deleteSessionTimeout || 5 )
