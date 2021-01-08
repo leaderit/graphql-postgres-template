@@ -20,7 +20,7 @@ test('TEST: Register and unregister User', async (t) => {
     org_id: null
   }
 
-  const max = 100000
+  const max = 10
 
   var tokens = []
   var data
