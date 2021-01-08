@@ -2,7 +2,7 @@
 
 const { test } = require('tap')
 const Fastify = require('fastify')
-const Plugin = require('../../plugins/support')
+const Plugin = require('../../plugins/redisEvents')
 
 test('plugins/support works standalone', (t) => {
   t.plan(2)
@@ -11,7 +11,7 @@ test('plugins/support works standalone', (t) => {
 
   fastify.ready((err) => {
     t.error(err)
-    t.equal( fastify.support_ok === undefined , false)
+    t.equal( fastify.onRedisEvent === undefined , false)
 
     // t.equal(fastify.someSupport(), 'hugs')
   })

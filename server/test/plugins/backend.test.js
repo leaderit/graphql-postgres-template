@@ -2,16 +2,16 @@
 
 const { test } = require('tap')
 const Fastify = require('fastify')
-const Plugin = require('../../plugins/support')
+const Plugin = require('../../plugins/backend')
 
-test('plugins/support works standalone', (t) => {
+test('plugins/backend works standalone', (t) => {
   t.plan(2)
   const fastify = Fastify()
   fastify.register(Plugin)
 
   fastify.ready((err) => {
     t.error(err)
-    t.equal( fastify.support_ok === undefined , false)
+    t.equal( fastify.backendSecret === undefined , false)
 
     // t.equal(fastify.someSupport(), 'hugs')
   })
