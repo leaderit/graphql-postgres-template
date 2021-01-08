@@ -1,5 +1,9 @@
 # GraphQL backend based on PostgreSQL database with Auth, Access rights and custom Business Logic
 
+## Предупреждение
+
+Для обеспечения безопасности данных всегда используйте соединение HTTPS
+
 ## Введение
 
 Сервис интерфейса прикладнох программ на базе GraphQL интерфейса Hasura, сервера
