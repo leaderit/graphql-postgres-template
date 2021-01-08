@@ -4,6 +4,16 @@
   select_permissions:
   - role: anonymous
     permission:
+      columns: []
+      filter:
+        _and:
+        - client_id:
+            _eq: X-Hasura-Client
+        - client_secret:
+            _eq: X-Hasura-Client-Secret
+      limit: 1
+  - role: backend
+    permission:
       columns:
       - client_id
       - client_secret
@@ -35,6 +45,32 @@
           name: users
         column_mapping:
           owner_id: id
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - id
+      - name
+      - filename
+      - owner_id
+      - org_id
+      - type
+      - public
+      - descr
+      - size
+      - group
+      - uploaded
+      - created_at
+      - updated_at
+      filter:
+        _or:
+        - owner_id:
+            _eq: X-Hasura-User-Id
+        - _and:
+          - org_id:
+              _eq: X-Hasura-Org-Id
+          - public:
+              _eq: true
 - table:
     schema: public
     name: orgs
@@ -81,12 +117,15 @@
   select_permissions:
   - role: anonymous
     permission:
+      columns: []
+      filter: {}
+  - role: backend
+    permission:
       columns:
-      - access
       - id
       - name
+      - access
       filter: {}
-      limit: 1
   - role: user
     permission:
       columns:
@@ -163,14 +202,52 @@
                 schema: public
                 name: users
       columns:
-      - id
-      - name
-      - login
       - created_at
-      - updated_at
-      - password
-      - role_id
+      - email
+      - id
+      - login
+      - name
       - org_id
+      - password
+      - phone
+      - role_id
+      - salt
+      - updated_at
+      backend_only: false
+  - role: backend
+    permission:
+      check:
+        _and:
+        - _exists:
+            _where:
+              _and:
+              - client_id:
+                  _eq: X-Hasura-Client
+              - client_secret:
+                  _eq: X-Hasura-Client-Secret
+            _table:
+              schema: public
+              name: applications
+        - _not:
+            _exists:
+              _where:
+                login:
+                  _eq: X-Hasura-Login
+              _table:
+                schema: public
+                name: users
+      columns:
+      - created_at
+      - email
+      - id
+      - login
+      - name
+      - org_id
+      - password
+      - phone
+      - role_id
+      - salt
+      - updated_at
       backend_only: false
   - role: orgadmin
     permission:
@@ -190,20 +267,29 @@
   select_permissions:
   - role: anonymous
     permission:
+      columns: []
+      filter:
+        login:
+          _eq: X-Hasura-Login
+      limit: 1
+      allow_aggregations: true
+  - role: backend
+    permission:
       columns:
       - created_at
+      - email
       - id
       - login
       - name
+      - org_id
       - password
+      - phone
       - role_id
+      - salt
       - updated_at
       filter:
-        _and:
-        - login:
-            _eq: X-Hasura-Login
-        - password:
-            _eq: X-Hasura-Password
+        login:
+          _eq: X-Hasura-Login
       limit: 1
       allow_aggregations: true
   - role: manager

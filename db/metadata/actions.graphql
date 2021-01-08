@@ -1,3 +1,17 @@
+type Mutation {
+  askcode (
+    action: String!
+  ): ConfirmationCode
+}
+
+
+type Query {
+  fileurl (
+    file_id: uuid!
+  ): UrlOutput
+}
+
+
 type Query {
   hello : HelloOutput
 }
@@ -54,6 +68,16 @@ type Query {
 }
 
 
+type Mutation {
+  upload (
+    file_id: uuid!
+    offset: Int
+    length: Int!
+    slice: String!
+  ): Result
+}
+
+
 
 
 input LoginInput {
@@ -98,5 +122,16 @@ type RegisterOutput {
 type Result {
   success : Boolean
   error : String
+}
+
+type UrlOutput {
+  file_id : uuid!
+  url : String
+}
+
+type ConfirmationCode {
+  code_id : String
+  action : String!
+  code : String
 }
 

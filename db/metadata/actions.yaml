@@ -1,4 +1,24 @@
 actions:
+- name: askcode
+  definition:
+    kind: synchronous
+    handler: '{{AUTH_BASE_URL}}/askcode'
+    forward_client_headers: true
+  permissions:
+  - role: anonymous
+  - role: manager
+  - role: orgadmin
+  - role: owner
+  - role: user
+- name: fileurl
+  definition:
+    kind: ""
+    handler: '{{BACKEND_BASE_URL}}/media/url'
+  permissions:
+  - role: manager
+  - role: orgadmin
+  - role: owner
+  - role: user
 - name: hello
   definition:
     kind: ""
@@ -9,8 +29,10 @@ actions:
   definition:
     kind: ""
     handler: '{{AUTH_BASE_URL}}/login'
+    forward_client_headers: true
   permissions:
   - role: anonymous
+  - role: backend
   - role: user
 - name: logout
   definition:
@@ -24,6 +46,10 @@ actions:
     kind: ""
     handler: '{{AUTH_BASE_URL}}/profile'
   permissions:
+  - role: backend
+  - role: manager
+  - role: orgadmin
+  - role: owner
   - role: user
 - name: register
   definition:
@@ -32,6 +58,7 @@ actions:
     forward_client_headers: true
   permissions:
   - role: anonymous
+  - role: backend
 - name: token
   definition:
     kind: ""
@@ -49,6 +76,10 @@ actions:
   - role: orgadmin
   - role: owner
   - role: user
+- name: upload
+  definition:
+    kind: synchronous
+    handler: '{{BACKEND_BASE_URL}}/media/upload'
 custom_types:
   enums: []
   input_objects:
@@ -77,4 +108,14 @@ custom_types:
         user_id: id
   - name: RegisterOutput
   - name: Result
+  - name: UrlOutput
+    relationships:
+    - remote_table:
+        schema: public
+        name: files
+      name: fileurl
+      type: object
+      field_mapping:
+        file_id: id
+  - name: ConfirmationCode
   scalars: []
