@@ -35,7 +35,7 @@ test('TEST: Admin Auth', async (t) => {
 
   refresh_token = data.login.refresh_token
 
-  // Проверяем большое количество отновлений сессии
+  // Проверяем большое количество обновлений сессии
   for ( var i=0; i<1; i++ ) {
     rc = await graphql(
       // query
