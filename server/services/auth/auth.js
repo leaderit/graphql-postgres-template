@@ -76,12 +76,6 @@ async function login( fastify, request, reply ) {
     const { backendSecret } = fastify
     const login  = request.body.input
 
-    console.log('LOGIN!!!')
-    console.log({ loginBS: backendSecret })
-
-    //const salt = createSalt()
-    //const pwHash = passwordHash( register.login, register.password, salt )
-
     const { data } = await hasura('', {
         query: //userLogin,
         `
@@ -238,7 +232,6 @@ async function register(fastify, request, reply){
     const register  = request.body.input
     const { backendSecret } = fastify
 
-    console.log('REGISTER')
     // Проверяем совпадение паролей
     if ( register.password === register.password2 ) {
 
