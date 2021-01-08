@@ -20,7 +20,9 @@
 async function hasuraAuth(fastify, request, reply){
   const { user } = request
   const { token } = request
+  var role = "anonymous"
 
+  if ( fastify.backendSecret === request.backendSecret ) role = "backend"
   if ( user ) {
       return { 
           "X-Hasura-User-Id": user.id || '',
@@ -32,18 +34,20 @@ async function hasuraAuth(fastify, request, reply){
   // Anonymous access level for login and refresh token actions
   return {
       "X-Hasura-User-Id": "",
-      "X-Hasura-Role": "anonymous",
+      "X-Hasura-Role": role,
       // Users Access
       "X-Hasura-Login": request.headers['x-hasura-login'] || '',
       "X-Hasura-Password": request.headers['x-hasura-password'] || '',
       // Applications Access
       "X-Hasura-Client": request.headers['x-hasura-client'] || '',
-      "X-Hasura-Client-Secret": request.headers['x-hasura-client-secret'] || ''
+      "X-Hasura-Client-Secret": request.headers['x-hasura-client-secret'] || '',
   }
 }
 
-module.exports = async function ( fastify, opts ) {
+module.exports = function ( fastify, opts, next ) {
+
   fastify.get('/hasura', async function (request, reply) {
-    return await hasuraAuth(fastify, request, reply)
+    reply.send( await hasuraAuth(fastify, request, reply) )
   })
+  next()
 }
