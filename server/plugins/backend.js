@@ -16,7 +16,6 @@ async function checkBackend (request, reply) {
     }    
   }
   request.backendSecret = backendSecret
-  console.log('preHandler for backend=', backendSecret )
   return
 }
 
