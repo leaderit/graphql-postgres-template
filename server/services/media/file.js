@@ -36,12 +36,15 @@ async function fileupload(fastify, request, reply){
   }
 }
 
+async function onFile(part) {
+  console.log( 'UPLOADED=', part )
+  // await pump(part.file, fs.createWriteStream(part.filename))
+}
+
 module.exports = function (fastify, opts, next) {
   const { hasura } = fastify
 
-  // fastify.decorate ( 'tokenLife', opts.auth.tokenLife || 0 )
-  // fastify.decorate ( 'minTokenLife', opts.auth.minTokenLife * 1000 || 10000 )
-  // fastify.decorate ( 'deleteSessionTimeout', opts.auth.deleteSessionTimeout || 5 )
+  fastify.register(require('fastify-multipart'), { attachFieldsToBody: true, onFile })
 
   fastify.post('/fileurl', async function (request, reply) 
   {
@@ -55,7 +58,16 @@ module.exports = function (fastify, opts, next) {
 
   fastify.post('/uploaded', async function (request, reply) 
   {
-    console.log( request.headers, request.body )
+    console.log( 'Uploaded=', { headers: request.headers, body: request.body } )
+    const { body } = request
+    if ( body ) {
+      const content_type = body['file.content_type'].value
+      const name = body['file.name'].value
+      const path = body['file.path'].value
+      const size = body['file.size'].value
+      const file_id = body['file_id'].value
+      console.log( content_type, name, path, size, file_id )
+    }
     reply.send( {
       upload: 'ok'
     } )
@@ -63,6 +75,7 @@ module.exports = function (fastify, opts, next) {
 
   fastify.get('/uploaded', async function (request, reply) 
   {
+
     console.log( request.headers, request.body )
     reply.send( {
       upload: 'GET OK'
