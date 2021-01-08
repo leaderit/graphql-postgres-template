@@ -39,6 +39,7 @@ function hasuraToken( request ){
   }
 }
 
+
 // Проверка - если пользователь зарегистрирован, загружаем в запрос его данные
 async function checkUser (request, reply) {
 
@@ -48,9 +49,7 @@ async function checkUser (request, reply) {
   var key = 'token/'
   var user = null
 
-
   if ( token == null ) token = hasuraToken( request ).token
-  
   if ( token ) {
     try {
       var data = await redis.get( key+token )
