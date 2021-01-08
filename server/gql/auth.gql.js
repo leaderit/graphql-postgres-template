@@ -22,12 +22,6 @@ Login:
       success
       error
       user_id
-      user {
-        id
-        login
-        name
-        password
-      }
       expires_in
       token_type
     }
@@ -108,12 +102,6 @@ Token:
       success
       error
       user_id
-      user {
-        id
-        login
-        name
-        password
-      }
       expires_in
       token_type
     }
