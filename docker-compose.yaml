@@ -147,7 +147,8 @@ services:
       # default NODE enviroment
       NODE_ENV: development # production
     # Для разработки
-    command: pm2-runtime server.js --watch --ignore-watch="node_modules"
+    command: pm2-runtime ecosystem.config.js
+    # server.js --watch --ignore-watch="public"
     # command: node --inspect=0.0.0.0:9229 server.js
 
 volumes:
