@@ -90,7 +90,6 @@ async function updateFile( fastify, request, file )
   })
 
   var file = null
-  // console.log( data.errors )
   if ( data.data ) file = data.data.update_files_by_pk
   return file    
 }
