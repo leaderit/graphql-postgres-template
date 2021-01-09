@@ -43,15 +43,23 @@ const config = {
   plugins: {
 
   },
+
+  // Путь к статическим файлам
   static: {
     root: path.join(process.env['PWD'], 'public'),
     prefix: '/',
     schemaHide: true,
     //setHeaders: ''
   },
+
+  // Путь к файловому хранилищу с правами доступа
+  storage: {
+    root: process.env['STORAGE'] || path.join(process.env['PWD'], 'storage'),
+  },
+
   // Параметры авторизации
   auth: {
-    tokenLife : 3600,
+    tokenLife : 3600, // Время жизни сессии в секундах
     // Если обновление жетона (токена) производится менее чем за минимальное время жизни
     // возвращается тот же жетон (токен)
     minTokenLife : 15,
