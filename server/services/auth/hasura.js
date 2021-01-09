@@ -27,7 +27,7 @@ async function hasuraAuth(fastify, request, reply){
       return { 
           "X-Hasura-User-Id": user.id || '',
           "X-Hasura-Role": user.role.name || 'anonymous',
-          "X-Hasura-Org": user.org_id || '',
+          "X-Hasura-Org-Id": user.org_id || '',
           "X-Hasura-Token": token || '',
       }
   }    
@@ -47,6 +47,9 @@ async function hasuraAuth(fastify, request, reply){
 module.exports = function ( fastify, opts, next ) {
 
   fastify.get('/hasura', async function (request, reply) {
+    // const hasura = await hasuraAuth(fastify, request, reply)
+    // console.log( { hasura })
+    // reply.send( hasura )
     reply.send( await hasuraAuth(fastify, request, reply) )
   })
   next()
