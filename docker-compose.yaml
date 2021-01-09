@@ -14,9 +14,11 @@ services:
       - redis
     # задаем файлы и папки
     volumes:
-        - ./server/public:/usr/share/nginx/html
-        - ./img/nginx/default.conf:/etc/nginx/conf.d/default.conf
-        - ./img/nginx/proxy.conf:/etc/nginx/conf.d/proxy.conf
+    #- ./server/public:/usr/share/nginx/html
+      - ./img/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./img/nginx/proxy.conf:/etc/nginx/conf.d/proxy.conf
+    # Хранилище для загрузки и раздачи файлов
+      - ./storage:/storage
     environment:
     # - NGINX_HOST=foobar.com
     - NGINX_PORT=80        
@@ -138,11 +140,13 @@ services:
     # - 3003:3000
     # - 9229:9229 # inspector debug interface
     volumes:
-    - ./server:/server
+      - ./server:/server
+      - ./storage:/storage
     environment:
       # Внутренний адрес для прямых запросов из бэкенда 
       HASURA: http://graphql-engine:8080/v1/graphql
-      ORIGIN: http://graphql-engine:8080 
+      ORIGIN: http://graphql-engine:8080
+      STORAGE: /storage 
       # http://localhost:3000 https://localhost:3000 http://dev2x.leaderit.ru
       # default NODE enviroment
       NODE_ENV: development # production
