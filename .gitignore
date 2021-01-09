@@ -1,6 +1,7 @@
 # db
 db/postgres/* 
 db/redis/*
+storage/*
 
 # Env
 .env
@@ -117,3 +118,4 @@ dist
 
 # common
 !.gitkeep
+!README.md
