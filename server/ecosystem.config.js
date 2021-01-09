@@ -4,7 +4,8 @@ module.exports = [{
     watch   : true,
     ignore_watch: [
         'public',
-        'node_modules'
+        'node_modules',
+        'storage'
     ]
     // exec_mode: 'cluster',
     // instances: 2
