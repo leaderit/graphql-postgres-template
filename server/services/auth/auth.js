@@ -86,6 +86,7 @@ async function login( fastify, request, reply ) {
                 name
                 password
                 salt
+                org_id
                 role {
                   access
                   id
