@@ -13,6 +13,12 @@ HOST=auth.local.ru
 # Имя внутренней сети Docker для проксирования
 #NET=nginx-proxy
 
+# Общие Параметры
+STORAGE=./storage
+
+# Nginx proxy
+
+
 # Hasura GraphQL
 HASURA_AUTH_HOOK=http://backend:3000/api/auth/hasura
 HASURA_BACKEND_BASE_URL=http://backend:3000/api
@@ -20,7 +26,10 @@ HASURA_BACKEND_BASE_URL=http://backend:3000/api
 # CORS Configuration
 # Look at https://hasura.io/docs/1.0/graphql/core/deployment/graphql-engine-flags/config-examples.html#configure-cors
 #
-HASURA_GRAPHQL_CORS_DOMAIN="http://localhost:8080"
+HASURA_GRAPHQL_CORS_DOMAIN="*"
+# "http://localhost:8081"
+# "*"
+# "http://localhost:8080, http://backend:3000, http://graphql-engine:8080"
 
 # Secret for Access
 HASURA_ADMIN_SECRET=myadminsecretkey
@@ -29,8 +38,14 @@ HASURA_PORT=8081
 HASURA_MIGRATIONS=./db/migrations
 HASURA_METADATA=./db/metadata
 
-#postgres 
+# PostgreSQL parameters
+# On 1-st start the PostgreSQL creates this user, password and database 
+POSTGRES_USER=api_admin
 POSTGRES_PASSWORD=postgrespassword
+POSTGRES_DB=api_db
+POSTGRES_PORT=5432
+
+# pgadmin
 PGADMIN_DEFAULT_EMAIL=admin@centerstruve.com
 PGADMIN_DEFAULT_PASSWORD=admin
 PGADMIN_PORT=5051
