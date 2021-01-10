@@ -5,7 +5,7 @@ const files = require('../../gql/files.gql')  // Стандартные запр
 
 // Хранилища файлов
 let storages = null
-let storageUrl
+let cfg = null;
 
 // Получаем путь для перемещения файла и url для его получения через PROXY 
 function getFileStorage( file, user ){
@@ -27,6 +27,7 @@ function getFileStorage( file, user ){
   }
 
   return {
+    type: file.type,
     fileDir,
     filePath,
     fileUrl
@@ -122,6 +123,7 @@ async function updateFile( fastify, request, file )
 
 // Проверка прав доступа к файлу хранилища
 async function fileAccess(fastify, request, reply){
+  const { redis } = fastify
   const { user } = request
   let filePath = null
   let url = null
@@ -129,20 +131,27 @@ async function fileAccess(fastify, request, reply){
   let storage = null
   let file = null
   const { file_id } = request.params
+  const fileKey = cfg.cacheKey + file_id
 
   if ( user ) {
-    // Добавить кеширование url для file storage
+    // Кеширование url для file storage
     // Получить из кеша по file_id
-
-    // Если пусто - запросить из БД
-    file = await getFile( fastify, request, file_id )
-    if ( file ) {
-      storage = getFileStorage( file, user )
-      // сохранить в кеш
+    const storage_data = await redis.get( fileKey )
+    if ( storage_data ) storage = JSON.parse( storage_data )
+    if ( storage === null ) {
+      // console.log('ПУСТО - БЕРЕМ ИЗ БД')
+      // Если пусто - запросить из БД
+      file = await getFile( fastify, request, file_id )
+      if ( file ) {
+        storage = getFileStorage( file, user )
+        // сохранить storage в кеш
+        await redis.setex(fileKey, cfg.cacheLife, JSON.stringify( storage ))
+      }
+    } else {
+      // console.log("ИЗ КЕША - ПРОДЛЯЕМ ЖИЗНЬ")
+      redis.expire(fileKey, cfg.cacheLife)      
     }
-
     // Тут на выходе правильный storage из БД или из кеша
-    //
     if ( storage && storage.fileUrl ) {
       // При неободимости добавить сюда проверку дополнительных прав
       // На основе данных из БД и сессии
@@ -152,7 +161,7 @@ async function fileAccess(fastify, request, reply){
     if ( access ) {
       reply.headers({
         'X-Accel-Redirect': url, 
-        'Content-Type': file.type
+        'Content-Type': storage.type
       })
       return ''
     }
@@ -168,6 +177,7 @@ function getFieldValue( body, name, def = null ){
 
 // Обработка загруженного пользователем файла
 async function fileUploaded(fastify, request, reply){
+  const { redis } = fastify
   const { user } = request
   const { body } = request
 
@@ -189,11 +199,14 @@ async function fileUploaded(fastify, request, reply){
       if ( storage && storage.filePath) {
         // Обновить БД с файлом и переместить файл
         mkdirp.sync( storage.fileDir )
-        file.url = storageUrl + '/' + file.id 
+        file.url = cfg.url + '/' + file.id 
         fs.rename( file.path, storage.filePath, ( err ) => {
           if ( err ) console.log( { err } )
         })
         const file_res = await updateFile( fastify, request, file )
+        storage.type = file_res.type
+        console.log('UPLOAD->CACHE', { storage })
+        await redis.setex('files/'+file_res.id, cfg.cacheLife, JSON.stringify( storage ))
         return { 
           uploaded: file_res.uploaded, 
           file_id: file_res.id,
@@ -223,7 +236,7 @@ async function fileUploaded(fastify, request, reply){
 
 module.exports = function (fastify, opts, next) {
   storages = opts.storages || null
-  storageUrl = opts.storage.url || '/storage'
+  cfg = opts.storage
 
   fastify.register(require('fastify-multipart'), { attachFieldsToBody: true })
 
