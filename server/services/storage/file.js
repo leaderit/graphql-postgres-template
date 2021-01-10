@@ -1,10 +1,37 @@
 'use strict'
 const fs = require('fs')
-// const pump = require('pump')
 const mkdirp = require('mkdirp')
-var storageRoot = '/storage'
-var storageUrl ='/storage'
 const files = require('../../gql/files.gql')  // Стандартные запросы к файлам
+
+// Хранилища файлов
+let storages = null
+let storageUrl
+
+// Получаем путь для перемещения файла и url для его получения через PROXY 
+function getFileStorage( file, user ){
+  const name = file.group
+  const storage = storages[ name ] || null
+  let filePath = null
+  let fileDir = null
+  let fileUrl = null
+
+  if ( storage ) {
+    let path = storage.template
+    path = path.replace('${user_id}', user.id )
+    path = path.replace('${org_id}', user.org_id || null)
+    // Последним обрабатываем file_id
+    fileDir = storage.path + path.replace('/${file_id}', '' )
+    path = path.replace('${file_id}', file.id )
+    filePath = storage.path + path;
+    fileUrl = storage.url + path;
+  }
+
+  return {
+    fileDir,
+    filePath,
+    fileUrl
+  }
+}
 
 // Получить данные запрошенного файла из БД
 async function getFile( fastify, request, file_id )
@@ -50,7 +77,6 @@ async function getFile( fastify, request, file_id )
 async function updateFile( fastify, request, file )
 {
     const { hasura } = fastify
-    console.log( { file } )
     // Получаем запись о файле из БД
     const { data } = await hasura('', {
       query:
@@ -100,20 +126,28 @@ async function fileAccess(fastify, request, reply){
   let filePath = null
   let url = null
   let access = false
-  const { group } = request.params
+  let storage = null
+  let file = null
   const { file_id } = request.params
 
   if ( user ) {
-    if ( group ==='user' ) filePath = 'users/'+user.id+'/'
-    if ( group ==='org' && user.org_id ) filePath = 'orgs/'+user.org_id+'/'
-    if ( group ==='public' ) filePath = 'public/'
+    // Добавить кеширование url для file storage
+    // Получить из кеша по file_id
 
-    const file = await getFile( fastify, request, file_id )
-    if ( file && filePath ) {
+    // Если пусто - запросить из БД
+    file = await getFile( fastify, request, file_id )
+    if ( file ) {
+      storage = getFileStorage( file, user )
+      // сохранить в кеш
+    }
+
+    // Тут на выходе правильный storage из БД или из кеша
+    //
+    if ( storage && storage.fileUrl ) {
       // При неободимости добавить сюда проверку дополнительных прав
       // На основе данных из БД и сессии
       access = true
-      url = '/files/'+filePath+file_id
+      url = storage.fileUrl
     }
     if ( access ) {
       reply.headers({
@@ -127,36 +161,36 @@ async function fileAccess(fastify, request, reply){
   return '' 
 }
 
+// Возвращает значения поля формы из тела запроса
+function getFieldValue( body, name, def = null ){
+  return ( body[name] || { value: def }).value
+}
+
 // Обработка загруженного пользователем файла
 async function fileUploaded(fastify, request, reply){
   const { user } = request
   const { body } = request
-  let filePath = null
 
   if ( body ) {
     const file = {
-      id: body['file_id'].value,
-      group: body['file_group'].value,
-      content_type: body['file.content_type'].value,
-      name: body['file.name'].value,
-      path: body['file.path'].value,
-      size: body['file.size'].value,
+      id: getFieldValue( body, 'file_id'),
+      group: getFieldValue( body, 'file_group'), 
+      content_type: getFieldValue( body, 'file.content_type'), 
+      name: getFieldValue( body, 'file.name'),
+      path: getFieldValue( body, 'file.path'),
+      size: getFieldValue( body, 'file.size'),
       uploaded: true
     }
 
-    if ( user ) {
-      if ( file.group ==='user' ) filePath = 'users/'+user.id+'/'
-      if ( file.group ==='org' && user.org_id ) filePath = 'orgs/'+user.org_id+'/'
-      if ( file.group ==='public' ) filePath = 'public/'
-
+    if ( user && file.path ) {
+      const file_data = await getFile( fastify, request, file.id )
+      const storage = getFileStorage( file_data, user )
       // Если выбрана допустимая группа для загрузки файла
-      if ( filePath ) {
+      if ( storage && storage.filePath) {
         // Обновить БД с файлом и переместить файл
-        file.dir = storageRoot + '/' + filePath
-        file.newPath = file.dir + file.id
-        mkdirp.sync(file.dir)
-        file.url = storageUrl + '/' + file.group + '/' + file.id 
-        fs.rename( file.path, file.newPath, ( err ) => {
+        mkdirp.sync( storage.fileDir )
+        file.url = storageUrl + '/' + file.id 
+        fs.rename( file.path, storage.filePath, ( err ) => {
           if ( err ) console.log( { err } )
         })
         const file_res = await updateFile( fastify, request, file )
@@ -170,31 +204,31 @@ async function fileUploaded(fastify, request, reply){
         }
       }
     }
-
-    fs.rm( file.path, { force: true, maxRetries: 3, retryDelay: 5000}, ( err )=>{
-      if ( err ) console.log( { err } )
-      else console.log( 'deleted ', file.path )
-    })
+    if (file.path) {
+      fs.rm( file.path, { force: true, maxRetries: 3, retryDelay: 5000}, ( err )=>{
+        if ( err ) console.log( { err } )
+        else console.log( 'Uploads deleted ', file.path )
+      })
+    } else return {
+      uploaded: false,
+      error: 'wrong file'      
+    }
   }
 
   return { 
     uploaded: false,
-    file_id: null,
-    url: null
+    error: 'wrong request'
   }
 }
 
 module.exports = function (fastify, opts, next) {
-  const { hasura } = fastify
-  const { root } = opts.storage // Storage root directory
-  const { url } = opts.storage // Storage url
-  storageRoot = root
-  storageUrl = url
+  storages = opts.storages || null
+  storageUrl = opts.storage.url || '/storage'
 
   fastify.register(require('fastify-multipart'), { attachFieldsToBody: true })
 
   // Вызывается из PROXY для проверки прав доступа к файлу
-  fastify.get('/access/:group/:file_id', async function (request, reply) 
+  fastify.get('/access/:file_id', async function (request, reply) 
   {
     reply.send( await fileAccess(fastify, request, reply) )
   })
