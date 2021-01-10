@@ -58,6 +58,13 @@ const config = {
     url: '/storage'
   },
 
+  // Хранилища файлов
+  storages: {
+    user: { url:'/files', path:'/storage', template:'/users/${user_id}/${file_id}'},
+    org: { url:'/files', path:'/storage', template:'/orgs/${org_id}/${file_id}'},
+    public: { url:'/files', path:'/storage', template:'/public/${file_id}'},
+  },
+
   // Параметры авторизации
   auth: {
     tokenLife : 3600, // Время жизни сессии в секундах
