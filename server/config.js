@@ -55,7 +55,9 @@ const config = {
   // Путь к файловому хранилищу с правами доступа
   storage: {
     root: process.env['STORAGE'] || path.join(process.env['PWD'], 'storage'),
-    url: '/storage'
+    url: '/storage',
+    cacheKey:'files/',
+    cacheLife:60
   },
 
   // Хранилища файлов
