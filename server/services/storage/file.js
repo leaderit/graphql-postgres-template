@@ -88,11 +88,10 @@ async function updateFile( fastify, request, file )
         $size: Int = 0, 
         $uploaded: Boolean = false,
         $type: String = "",
-        $group: String = ""
       ) {
         update_files_by_pk(
           pk_columns: {id: $id}, 
-          _set: { filename: $filename, size: $size, type: $type, uploaded: $uploaded, group: $group }) {
+          _set: { filename: $filename, size: $size, type: $type, uploaded: $uploaded}) {
           id
           size
           type
@@ -107,8 +106,7 @@ async function updateFile( fastify, request, file )
           filename: file.name,
           uploaded: file.uploaded,
           type: file.content_type,
-          size: file.size,
-          group: file.group
+          size: file.size
       }
   }, {
       headers: {
@@ -170,6 +168,43 @@ async function fileAccess(fastify, request, reply){
   return '' 
 }
 
+// Проверка прав доступа на загрузку файла
+async function fileUploadAccess(fastify, request, reply){
+  const { redis } = fastify
+  const { user } = request
+  let filePath = null
+  let url = null
+  let access = false
+  let storage = null
+  let file = null
+  const file_id = request.headers['x-file-id']
+  const fileKey = cfg.cacheKey + file_id
+
+  if ( user ) {
+    // Запросим файл из БД
+    if ( file_id ) {
+      file = await getFile( fastify, request, file_id )
+      if ( file ) {
+        storage = getFileStorage( file, user )
+        // сохранить storage в кеш
+        await redis.setex(fileKey, cfg.cacheLife, JSON.stringify( storage ))
+      }
+    }
+    // console.log( { file, storage })
+    // // Тут на выходе правильный storage из БД или из кеша
+    if ( storage && storage.fileUrl ) {
+      // При неободимости добавить сюда проверку дополнительных прав
+      // На основе данных из БД и сессии
+      access = true
+      url = storage.fileUrl
+    }
+    if ( access ) {
+      return ''
+    } else reply.code( 403 )
+  } else reply.code( 401 )
+  return '' 
+}
+
 // Возвращает значения поля формы из тела запроса
 function getFieldValue( body, name, def = null ){
   return ( body[name] || { value: def }).value
@@ -180,11 +215,11 @@ async function fileUploaded(fastify, request, reply){
   const { redis } = fastify
   const { user } = request
   const { body } = request
+  // const file_id = request.headers['x-file-id']
 
   if ( body ) {
     const file = {
-      id: getFieldValue( body, 'file_id'),
-      group: getFieldValue( body, 'file_group'), 
+      id: request.headers['x-file-id'], //getFieldValue( body, 'file_id'),
       content_type: getFieldValue( body, 'file.content_type'), 
       name: getFieldValue( body, 'file.name'),
       path: getFieldValue( body, 'file.path'),
@@ -205,7 +240,6 @@ async function fileUploaded(fastify, request, reply){
         })
         const file_res = await updateFile( fastify, request, file )
         storage.type = file_res.type
-        console.log('UPLOAD->CACHE', { storage })
         await redis.setex('files/'+file_res.id, cfg.cacheLife, JSON.stringify( storage ))
         return { 
           uploaded: file_res.uploaded, 
@@ -215,6 +249,9 @@ async function fileUploaded(fastify, request, reply){
           url: file.url,
           group: file_res.group
         }
+      } else return {
+        uploaded: false,
+        error: 'wrong file storage'        
       }
     }
     if (file.path) {
@@ -246,10 +283,19 @@ module.exports = function (fastify, opts, next) {
     reply.send( await fileAccess(fastify, request, reply) )
   })
 
+  // Вызывается из PROXY для проверки прав доступа к на загрузку файла
+  fastify.get('/access-up/', async function (request, reply) 
+  {
+    reply.send( await fileUploadAccess(fastify, request, reply) )
+  })
+
   // Вызывается из PROXY когда файл загружен 
   fastify.post('/uploaded', async function (request, reply) 
   {
-    reply.send( await fileUploaded(fastify, request, reply) )
+    const result = await fileUploaded(fastify, request, reply)
+    if ( !result.uploaded ) reply.code(422)
+    reply.send( result )
+    // console.log('.\n.\n.\n.\n.\n.\n.\n')
   })
 
   next()
