@@ -1,7 +1,7 @@
 # db
 db/postgres/* 
 db/redis/*
-storage/*
+storage*/*
 
 # Env
 .env
