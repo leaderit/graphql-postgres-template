@@ -1,5 +1,6 @@
 # !/bin/sh
 docker-compose down
+# docker system prune -a
 docker image rm graphql-postgres-template_proxy
 docker-compose up -d --build
 
