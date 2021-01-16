@@ -34,6 +34,7 @@
     "fastify-socket.io": "0.0.4",
     "fastify-static": "^3.3.0",
     "ioredis": "^4.19.2",
+    "minio": "^7.0.18",
     "mkdirp": "^1.0.4",
     "path": "^0.12.7",
     "pm2": "^4.5.0",
