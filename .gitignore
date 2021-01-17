@@ -2,6 +2,7 @@
 db/postgres/* 
 db/redis/*
 storage*/*
+cloud*/*
 
 # Env
 .env
