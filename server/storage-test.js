@@ -22,6 +22,7 @@ async function start() {
     }
 
     var metaData = {
+        // 'Content-Type': 'video/mov',
         'Content-Type': 'video/mp4',
         // 'Content-Type': 'application/octet-stream',
         'X-Amz-Meta-Testing': 1234,
