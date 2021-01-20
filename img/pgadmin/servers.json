@@ -3,7 +3,7 @@
     "Servers": {
         "1": {
             "Name": "GraphQL database server",
-            "Group": "GraphQL",
+            "Group": "Servers",
             "Port": 5432,
             "Username": "api_admin",
             "Host": "postgres",
