@@ -21,7 +21,7 @@ STORAGE_SECRET=zuf+tfteuejlkjdlcknclaksdljkaSlswRu7BJ86wekitnifILbZam1KYY3TG
 
 
 # Nginx proxy
-
+PROXY_PORT=8088
 
 # Hasura GraphQL
 HASURA_AUTH_HOOK=http://backend:3000/api/auth/hasura
