@@ -13,8 +13,10 @@ sed -i '' -e "s/NAME=.*/NAME=$PROJECT/" .env
 cd server
 npm install
 cd ..
-docker-compose down
 docker-compose up -d
+
+# Waiting until services will start fully
+sleep 10
 
 # database and metadata
 ./hasura-cli migrate apply
