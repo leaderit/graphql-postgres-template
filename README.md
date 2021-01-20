@@ -67,7 +67,7 @@ Default endpoints for access services are:
 - Hasura Console: http://localhost:8088/hasura/
 
 
-Details are in (img/nginx/default.conf)
+Details are in `img/nginx/default.conf`
 
 ### Безопасность
 
