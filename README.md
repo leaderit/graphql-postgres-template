@@ -24,7 +24,7 @@ SQL PostgreSQL и обработчика бизнес логики на базе
 
 - Высокая производительность
 - Легкая расширяемость
-- Поддержка внешних POST API
+- Поддержка внешних REST API
 - Интеграция внешних GraphQL сервисов
 - Подписка на обновления через Web Sockets
 - Удобная GraphQL консоль для настройки и отладки запросов и данных
@@ -62,9 +62,11 @@ You can access to the template subsystems via Nginx proxy only.
 
 Default endpoints for access services are:
 
-    Files Upload API: http://localhost:8088/api/
-    Hasura GraphQL API: http://localhost:8088/graphql/
-    Hasura Console: http://localhost:8088/hasura/
+Files Upload API: http://localhost:8088/api/
+
+Hasura GraphQL API: http://localhost:8088/graphql/
+
+Hasura Console: http://localhost:8088/hasura/
 
 
 Details are in `img/nginx/default.conf`.
