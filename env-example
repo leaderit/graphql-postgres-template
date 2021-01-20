@@ -15,7 +15,7 @@ HOST=auth.local.ru
 
 # Общие Параметры
 STORAGE=./storage
-CLOUD=./cloud
+CLOUD=./storage-cloud
 STORAGE_USER=Q3AM3UQ8KJAHSDKJIUQMNBDMNBCAKLKAJSDL67SPQQA43P2F
 STORAGE_SECRET=zuf+tfteuejlkjdlcknclaksdljkaSlswRu7BJ86wekitnifILbZam1KYY3TG
 
