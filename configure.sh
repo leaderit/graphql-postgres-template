@@ -18,7 +18,7 @@ docker-compose up -d
 
 # Waiting until services will start fully
 STARTED=NO
-echo Waiting for start services ...
+echo Waiting for start GraphQL services ...
 until [ "$STARTED" = "OK" ]
 do
     STARTED=$(curl  -f -s http://localhost:8088/hasura/healthz)
@@ -26,8 +26,8 @@ do
     #/$STARTED/
     sleep 3
 done
-echo Waiting for database ...
-sleep 30
+#echo Waiting for database ...
+#sleep 30
 echo OK
 
 # database and metadata
