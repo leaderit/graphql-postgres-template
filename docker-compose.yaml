@@ -6,7 +6,7 @@ services:
     # image: nginx:latest
     build: ./img/nginx
     ports:
-        - 8088:80
+        - ${PROXY_PORT}:80
     depends_on:
       - graphql-engine
       - backend
