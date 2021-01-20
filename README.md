@@ -47,7 +47,14 @@ SQL PostgreSQL и обработчика бизнес логики на базе
 
 ### Приложения
 
+It the template you can not access to docker services directly by securitu reason.
+You can access to the template subsystems via Nginx proxy only.
 
+Default endpoints for access services are:
+
+    Hasura GraphQL API: http://localhost:8080/graphql
+
+Details are in `img/nginx/default.conf`.
 
 ### Безопасность
 
@@ -125,6 +132,12 @@ SQL PostgreSQL и обработчика бизнес логики на базе
     ./hasura-cli seeds apply
 
 Повторный запуск команд на существующей базе данных может вызвать ошибку.
+
+### How to delete all migrations records
+
+    1. Run `./psql-cli`
+    2. Enter command: `DELETE FROM hdb_catalog.schema_migrations;`
+    3. Quit by `\q`
 
 ### Запуск тестов
 
