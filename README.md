@@ -52,7 +52,10 @@ You can access to the template subsystems via Nginx proxy only.
 
 Default endpoints for access services are:
 
-    Hasura GraphQL API: http://localhost:8080/graphql
+    Files Upload API: http://localhost:8088/api/
+    Hasura GraphQL API: http://localhost:8088/graphql/
+    Hasura Console: http://localhost:8088/hasura/
+
 
 Details are in `img/nginx/default.conf`.
 
@@ -197,7 +200,7 @@ Details are in `img/nginx/default.conf`.
     ./hasura-cli metadata export
 - При необходимости сохранить миграцию командой
 
-    ./hasura-cli migrate create init
+    ./hasura-cli migrate create --from-server init
 
 где `init` - имя миграциию если вы перед этим выгрузили другие миграцииб вам 
 необходимо удалить дублирующиеся команды из новой миграции вручную. В противном случае
