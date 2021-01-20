@@ -14,6 +14,7 @@ cd server
 npm install
 cd ..
 docker-compose down
+docker-compose build
 docker-compose up -d
 
 # Waiting until services will start fully
