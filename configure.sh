@@ -1,21 +1,23 @@
 # !/bin/sh
-C_NORMAL="\x1B[0m"
-C_RED="\x1B[31m"
-C_GREEN="\x1B[32m"
-C_YELLOW="\x1B[33m"
-C_BLUE="\x1B[34m"
-C_MAGENTA="\x1B[35m"
-C_CYAN="\x1B[36m"
-C_WHITE="\x1B[37m"
-# 
-KNRM="\x1B[0m"
-KRED="\x1B[31m"
-KGRN="\x1B[32m"
-KYEL="\x1B[33m"
-KBLU="\x1B[34m"
-KMAG="\x1B[35m"
-KCYN="\x1B[36m"
-KWHT="\x1B[37m"
+# Text color
+C_NRM="\033[0m"
+C_BLK="\033[30m"
+C_RED="\033[31m"
+C_GRN="\033[32m"
+C_YEL="\033[33m"
+C_BLU="\033[34m"
+C_MAG="\033[35m"
+C_CYN="\033[36m"
+C_WHT="\033[37m"
+# Text backgound
+B_NRM="\033[0m"
+B_RED="\033[41m"
+B_GRN="\033[42m"
+B_YEL="\033[43m"
+B_BLU="\033[44m"
+B_MAG="\033[45m"
+B_CYN="\033[46m"
+B_WHT="\033[47m"
 
 # Set project name to current directory name
 PROJECT=$(pwd | grep -o '[^/]*$')
@@ -43,7 +45,7 @@ do
     printf %s "." 
     sleep 1
 done
-printf %s " ${C_GREEN}done${C_NORMAL}"
+printf %s " ${C_GRN}done${C_NRM}"
 
 # database and metadata
 ./hasura-cli migrate apply
