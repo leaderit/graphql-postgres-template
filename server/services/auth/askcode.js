@@ -1,7 +1,8 @@
 const crypto = require('crypto')
 
 // Запрос кода подтверждения
-async function createCode(fastify, request, reply){
+async function createCode(fastify, request, reply)
+{
     const { redis } = fastify
     const { codeLife } = fastify
     const { sendCode } = fastify
@@ -37,29 +38,36 @@ async function createCode(fastify, request, reply){
 }
 
 // Проверка кода подтверждения
-async function checkCode( code_id, operation, code ){
+async function checkCode( code_id, operation, code )
+{
     return false;
 }
 
 // Проверка кода подтверждения
-async function testCode( code_id, operation, code ){
+async function testCode( code_id, operation, code )
+{
     return { result: false };
 }
 
-module.exports = function (fastify, opts, next) {
+module.exports = function (fastify, opts, next) 
+{
     fastify.decorate ( 'codeLife', opts.auth.codeLife || 180 )
     fastify.decorate ( 'checkCode', checkCode )
     fastify.decorate ( 'testCode', testCode )
 
-    fastify.post('/askcode', async function (request, reply) 
-    {
-      reply.send( await createCode(fastify, request, reply) )
-    })    
+    fastify.post('/askcode', 
+        async function (request, reply) 
+        {
+            reply.send( await createCode(fastify, request, reply) )
+        }
+    )    
     
-    fastify.get('/testcode', async function (request, reply) 
-    {
-      reply.send( await fastify.testCode(fastify, request, reply) )
-    })  
+    fastify.get('/testcode', 
+        async function (request, reply) 
+        {
+            reply.send( await fastify.testCode(fastify, request, reply) )
+        }
+    )  
 
     next()
 }
