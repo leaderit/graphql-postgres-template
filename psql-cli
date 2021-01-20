@@ -4,6 +4,6 @@ POSTGRES_DB=$(grep "^POSTGRES_DB=" .env | sed "s/POSTGRES_DB=//")
 POSTGRES_USER=$(grep "^POSTGRES_USER=" .env | sed "s/POSTGRES_USER=//")
 POSTGRES_PASSWORD=$(grep "^POSTGRES_PASSWORD=" .env | sed "s/POSTGRES_PASSWORD=//")
 
-docker exec -ti $NAME-postgres psql -U $POSTGRES_USER ${POSTGRES_DB} $@
+docker exec --tty $NAME-postgres psql -U $POSTGRES_USER ${POSTGRES_DB} $@
 
 

@@ -6,5 +6,5 @@ NET=${NAME}_default
 
 #docker run -it --net=$NET --entrypoint=/bin/bash minio/mc 
 #docker run -it --net=$NET minio/mc alias set storage http://storage:9000 Q3AM3UQ867SPQQA43P2F zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
-docker run -it --net=$NET minio/mc $@
+docker run --tty --net=$NET minio/mc $@
 
