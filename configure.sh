@@ -1,4 +1,7 @@
 # !/bin/sh
+C_NORMAL="\x1B[0m"
+C_GREEN="\x1B[32m"
+
 # Set project name to current directory name
 PROJECT=$(pwd | grep -o '[^/]*$')
 
@@ -22,11 +25,10 @@ printf %s "Waiting for start GraphQL services "
 until [ "$STARTED" = "OK" ]
 do
     STARTED=$(curl  -f -s http://localhost:8088/hasura/healthz)
-    printf %s "..." 
-    #/$STARTED/
-    sleep 3
+    printf %s "." 
+    sleep 1
 done
-echo OK
+printf %s " ${C_GREEN}done${C_NORMAL}"
 
 # database and metadata
 ./hasura-cli migrate apply
