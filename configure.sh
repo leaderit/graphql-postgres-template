@@ -17,12 +17,15 @@ docker-compose down
 docker-compose up -d
 
 # Waiting until services will start fully
+STARTED=NO
 echo Waiting for start services ...
-until [ "$(curl http://localhost:8088/hasura/healthz)" = "OK" ]
+until [ "$STARTED" = "OK" ]
 do
+    STARTED=$(curl  -f -s http://localhost:8088/hasura/healthz)
+    echo /$STARTED/
     sleep 3
 done
-sleep 30
+sleep 15
 echo OK
 
 # database and metadata
