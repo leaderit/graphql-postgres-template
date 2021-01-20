@@ -9,7 +9,6 @@ cp server/env-example server/.env
 # EDIT .env  and set NAME variable to "my-project"
 sed -i '' -e "s/NAME=.*/NAME=$PROJECT/" .env 
 
-PROXY_PORT=$(grep "^PROXY_PORT=" .env | sed "s/PROXY_PORT=//")
 # set other variables in apropriate values, espetialy passwords
 cd server
 npm install
@@ -19,6 +18,7 @@ docker-compose build
 docker-compose up -d
 
 # Waiting until services will start fully
+PROXY_PORT=$(grep "^PROXY_PORT=" .env | sed "s/PROXY_PORT=//")
 STARTED=NO
 printf %s "Waiting for start GraphQL services "
 until [ "$STARTED" = "OK" ]
