@@ -1,6 +1,7 @@
 # !/bin/sh
 # Set project name to current directory name
 PROJECT=$(pwd | grep -o '[^/]*$')
+PROXY_PORT=$(grep "^PROXY_PORT=" .env | sed "s/PROXY_PORT=//")
 
 git clone https://github.com/leaderit/graphql-postgres-template.git .
 
@@ -22,7 +23,7 @@ STARTED=NO
 printf %s "Waiting for start GraphQL services "
 until [ "$STARTED" = "OK" ]
 do
-    STARTED=$(curl  -f -s http://localhost:8088/hasura/healthz)
+    STARTED=$(curl  -f -s http://localhost:$PROXY_PORT/hasura/healthz)
     printf %s "." 
     sleep 1
 done
