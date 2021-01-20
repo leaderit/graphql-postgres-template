@@ -62,11 +62,9 @@ You can access to the template subsystems via Nginx proxy only.
 
 Default endpoints for access services are:
 
-Files Upload API: http://localhost:8088/api/
-
-Hasura GraphQL API: http://localhost:8088/graphql/
-
-Hasura Console: http://localhost:8088/hasura/
+- Files Upload API: http://localhost:8088/api/
+- Hasura GraphQL API: http://localhost:8088/graphql/
+- Hasura Console: http://localhost:8088/hasura/
 
 
 Details are in `img/nginx/default.conf`.
