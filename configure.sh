@@ -22,6 +22,8 @@ do
     sleep 3
 done
 
+sleep 10
+
 # database and metadata
 ./hasura-cli migrate apply
 ./hasura-cli metadata apply
