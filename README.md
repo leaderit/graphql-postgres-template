@@ -5,8 +5,6 @@
     mkdir my-project
     cd my-project
     curl https://raw.githubusercontent.com/leaderit/graphql-postgres-template/main/configure.sh | bash -s --
-#    chmod +x configure.sh
-#    ./configure.sh
 
 ## Предупреждение
 
