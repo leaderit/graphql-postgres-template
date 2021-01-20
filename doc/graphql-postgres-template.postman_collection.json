@@ -1,0 +1,1368 @@
+{
+	"info": {
+		"_postman_id": "621fa963-0557-407e-8283-e46c60007fb5",
+		"name": "graphql-postgres-template",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login-Logout",
+			"item": []
+		},
+		{
+			"name": "GaphQL user|all",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-hasura-admin-secret",
+						"value": "myadminsecretkey",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query Users {\n  users {\n    id,\n    name,\n    login\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GaphQL user|by id",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query MyQuery($id: uuid = \"\") {\n  users(where: {id: {_eq: $id}}) {\n    id\n    login\n    name\n    updated_at\n  }\n}",
+						"variables": " {\n     \"id\":\"9e74ce44-1ae6-11eb-ae92-8f6f1e8276cc\"\n }"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/api/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"api",
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"",
+							"// pm.environment.set(\"variable_key\", \"variable_value\");",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"response must be valid and have a body\", function () {",
+							"     pm.response.to.be.ok;",
+							"     pm.response.to.be.withBody;",
+							"     pm.response.to.be.json;",
+							"});",
+							"",
+							"pm.test(\"Token ok\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.token) {",
+							"        pm.environment.set(\"token\", jsonData.token);",
+							"    } else {",
+							"        pm.environment.set(\"token\", \"\");",
+							"    }",
+							"    pm.expect(jsonData.token).not.empty;",
+							"",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"login1\",\n    \"password\":\"password1\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/api/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API Upload File",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"",
+							"// pm.environment.set(\"variable_key\", \"variable_value\");",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"response must be valid and have a body\", function () {",
+							"     pm.response.to.be.ok;",
+							"     pm.response.to.be.withBody;",
+							"     pm.response.to.be.json;",
+							"});",
+							"",
+							"// pm.test(\"Token ok\", function () {",
+							"//     var jsonData = pm.response.json();",
+							"//     if (jsonData.token) {",
+							"//         pm.environment.set(\"token\", jsonData.token);",
+							"//     } else {",
+							"//         pm.environment.set(\"token\", \"\");",
+							"//     }",
+							"//     pm.expect(jsonData.token).not.empty;",
+							"",
+							"// });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "file_id",
+						"value": "81fc512a-4236-11eb-96d1-975577b0463c",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "X-Progress-ID",
+						"value": "81fc512a-4236-11eb-96d1-975577b0463c",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "X-File-ID",
+						"value": "81fc512a-4236-11eb-96d1-975577b0463c",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/vg/Pictures/vg-small.jpg"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/vg/Pictures/mstruve-avatar-small.jpg",
+							"disabled": true
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/vg/Movies/vsms-ht-logo.mp4",
+							"disabled": true
+						},
+						{
+							"key": "file_id",
+							"value": "81fc512a-4236-11eb-96d1-975577b0463c",
+							"type": "text"
+						},
+						{
+							"key": "file_group",
+							"value": "user",
+							"type": "text"
+						},
+						{
+							"key": "file_group",
+							"value": "org",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "file_group",
+							"value": "public",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "file",
+							"description": "BIG FILE",
+							"type": "file",
+							"src": "/Users/vg/Movies/MBfin.mp4",
+							"disabled": true
+						},
+						{
+							"key": "X-Progress-ID",
+							"value": "81fc512a-4236-11eb-96d1-975577b0463c",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "X-File-ID",
+							"value": "81fc512a-4236-11eb-96d1-975577b0463c",
+							"type": "text",
+							"disabled": true
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/upload",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API Upload File via https://dev2x.leaderit.ru/devapi/",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"",
+							"// pm.environment.set(\"variable_key\", \"variable_value\");",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"response must be valid and have a body\", function () {",
+							"     pm.response.to.be.ok;",
+							"     pm.response.to.be.withBody;",
+							"     pm.response.to.be.json;",
+							"});",
+							"",
+							"// pm.test(\"Token ok\", function () {",
+							"//     var jsonData = pm.response.json();",
+							"//     if (jsonData.token) {",
+							"//         pm.environment.set(\"token\", jsonData.token);",
+							"//     } else {",
+							"//         pm.environment.set(\"token\", \"\");",
+							"//     }",
+							"//     pm.expect(jsonData.token).not.empty;",
+							"",
+							"// });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-File-ID",
+						"value": "81fc512a-4236-11eb-96d1-975577b0463c",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/vg/Pictures/vg-small.jpg",
+							"disabled": true
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/vg/Pictures/mstruve-avatar-small.jpg"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/vg/Movies/vsms-ht-logo.mp4",
+							"disabled": true
+						},
+						{
+							"key": "file_id",
+							"value": "81fc512a-4236-11eb-96d1-975577b0463c",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "file_group",
+							"value": "user",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "file_group",
+							"value": "org",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "file_group",
+							"value": "public",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "file",
+							"description": "BIG FILE",
+							"type": "file",
+							"src": "/Users/vg/Movies/MBfin.mp4",
+							"disabled": true
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://dev2x.leaderit.ru/devapi/upload",
+					"protocol": "https",
+					"host": [
+						"dev2x",
+						"leaderit",
+						"ru"
+					],
+					"path": [
+						"devapi",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API Get File",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"",
+							"// pm.environment.set(\"variable_key\", \"variable_value\");",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// pm.test(\"response must be valid and have a body\", function () {",
+							"//      pm.response.to.be.ok;",
+							"//      pm.response.to.be.withBody;",
+							"//      pm.response.to.be.json;",
+							"// });",
+							"",
+							"// pm.test(\"Token ok\", function () {",
+							"//     var jsonData = pm.response.json();",
+							"//     if (jsonData.token) {",
+							"//         pm.environment.set(\"token\", jsonData.token);",
+							"//     } else {",
+							"//         pm.environment.set(\"token\", \"\");",
+							"//     }",
+							"//     pm.expect(jsonData.token).not.empty;",
+							"",
+							"// });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true,
+					"content-length": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "file_id",
+						"type": "text",
+						"value": "81fc512a-4236-11eb-96d1-975577b0463c",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8088/storage/81fc512a-4236-11eb-96d1-975577b0463c",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"storage",
+						"81fc512a-4236-11eb-96d1-975577b0463c"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API Upload Progress",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"",
+							"// pm.environment.set(\"variable_key\", \"variable_value\");",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// pm.test(\"response must be valid and have a body\", function () {",
+							"//      pm.response.to.be.ok;",
+							"//      pm.response.to.be.withBody;",
+							"//      pm.response.to.be.json;",
+							"// });",
+							"",
+							"// pm.test(\"Token ok\", function () {",
+							"//     var jsonData = pm.response.json();",
+							"//     if (jsonData.token) {",
+							"//         pm.environment.set(\"token\", jsonData.token);",
+							"//     } else {",
+							"//         pm.environment.set(\"token\", \"\");",
+							"//     }",
+							"//     pm.expect(jsonData.token).not.empty;",
+							"",
+							"// });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true,
+					"content-length": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Progress-ID",
+						"type": "text",
+						"value": "81fc512a-4236-11eb-96d1-975577b0463c",
+						"disabled": true
+					},
+					{
+						"key": "X-File-ID",
+						"value": "81fc512a-4236-11eb-96d1-975577b0463c",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8088/upload-progress",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"upload-progress"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API Get File via https://dev2x.leaderit.ru/devapi/",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"",
+							"// pm.environment.set(\"variable_key\", \"variable_value\");",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// pm.test(\"response must be valid and have a body\", function () {",
+							"//      pm.response.to.be.ok;",
+							"//      pm.response.to.be.withBody;",
+							"//      pm.response.to.be.json;",
+							"// });",
+							"",
+							"// pm.test(\"Token ok\", function () {",
+							"//     var jsonData = pm.response.json();",
+							"//     if (jsonData.token) {",
+							"//         pm.environment.set(\"token\", jsonData.token);",
+							"//     } else {",
+							"//         pm.environment.set(\"token\", \"\");",
+							"//     }",
+							"//     pm.expect(jsonData.token).not.empty;",
+							"",
+							"// });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-length": true,
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "file_id",
+						"type": "text",
+						"value": "81fc512a-4236-11eb-96d1-975577b0463c",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "https://dev2x.leaderit.ru/devapi/storage/81fc512a-4236-11eb-96d1-975577b0463c",
+					"protocol": "https",
+					"host": [
+						"dev2x",
+						"leaderit",
+						"ru"
+					],
+					"path": [
+						"devapi",
+						"storage",
+						"81fc512a-4236-11eb-96d1-975577b0463c"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API Logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"login1\",\n    \"password\":\"password1\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/api/auth/logout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"api",
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Hasura test Direct",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "content-type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-hasura-admin-secret",
+						"value": "myadminsecretkey",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query MyQuery {\n  users {\n    id\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/v1/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"v1",
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Hasura Test via PROXY",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "content-type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "x-hasura-admin-secret",
+						"type": "text",
+						"value": "myadminsecretkey"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query MyQuery {\n  users {\n    id\n    name\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL GetCode",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "content-type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "x-hasura-admin-secret",
+						"type": "text",
+						"value": "myadminsecretkey",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation AskCode ( $action: String! ) {\n  askcode ( action: $action ) {\n    code_id\n    action\n    code\n  }\n}\n",
+						"variables": "{\n    \"action\":\"login\"\n}"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"",
+							"// pm.environment.set(\"variable_key\", \"variable_value\");",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"response must be valid and have a body\", function () {",
+							"     pm.response.to.be.ok;",
+							"     pm.response.to.be.withBody;",
+							"     pm.response.to.be.json;",
+							"});",
+							"",
+							"pm.test(\"Token ok\", function () {",
+							"    var jsonData = pm.response.json().data;",
+							"    //console.log( jsonData )",
+							"    if (jsonData.login.access_token) {",
+							"        pm.environment.set(\"token\", jsonData.login.access_token);",
+							"        pm.environment.set(\"rtoken\", jsonData.login.refresh_token);",
+							"    } else {",
+							"        pm.environment.set(\"token\", \"\");",
+							"        pm.environment.set(\"rtoken\", \"\");",
+							"    }",
+							"    pm.expect(jsonData.login.access_token).not.empty;",
+							"    pm.expect(jsonData.login.refresh_token).not.empty;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-hasura-admin-secret",
+						"value": "myadminsecretkey",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query Login($password: String!, $username: String!, $scope: String = \"\", $client_secret: String = \"\", $client_id: String = \"\") {\n  login(password: $password, username: $username, client_id: $client_id, client_secret: $client_secret, scope: $scope) {\n    access_token\n    refresh_token\n    success\n    error\n    user_id\n    expires_in\n    token_type\n  }\n}\n",
+						"variables": "{\n    \"client_id\":\"ios-v1\",\n    \"client_secret\":\"supersecret\",\n    \"scope\":\"scope1\",\n    \"username\":\"login1\",\n    \"password\":\"password1\"\n}"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Register",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"",
+							"// pm.environment.set(\"variable_key\", \"variable_value\");",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"response must be valid and have a body\", function () {",
+							"     pm.response.to.be.ok;",
+							"     pm.response.to.be.withBody;",
+							"     pm.response.to.be.json;",
+							"});",
+							"",
+							"pm.test(\"Token ok\", function () {",
+							"    var jsonData = pm.response.json().data;",
+							"    //console.log( jsonData )",
+							"    if (jsonData.register.access_token) {",
+							"        pm.environment.set(\"token\", jsonData.register.access_token);",
+							"        pm.environment.set(\"rtoken\", jsonData.register.refresh_token);",
+							"    } else {",
+							"        pm.environment.set(\"token\", \"\");",
+							"        pm.environment.set(\"rtoken\", \"\");",
+							"    }",
+							"    pm.expect(jsonData.login.access_token).not.empty;",
+							"    pm.expect(jsonData.login.refresh_token).not.empty;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-hasura-admin-secret",
+						"value": "myadminsecretkey",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "x-hasura-client",
+						"value": "ios-v1",
+						"type": "text"
+					},
+					{
+						"key": "x-hasura-client-secret",
+						"value": "supersecret",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query Register(\n    $password: String!, \n    $password2: String!, \n    $login: String!, \n    $scope: String = \"\", \n    $client_secret: String = \"\", \n    $client_id: String = \"\"\n    $org_id: uuid\n) {\n  register ( \n        password: $password,\n        password2: $password2,  \n        login: $login, \n        client_id: $client_id, \n        client_secret: $client_secret, \n        scope: $scope\n        org_id: $org_id\n    ){\n    access_token\n    refresh_token\n    success\n    error\n    user_id\n    expires_in\n    token_type\n  }\n}\n",
+						"variables": "{\n    \"client_id\":\"ios-v1\",\n    \"client_secret\":\"supersecret\",\n    \"scope\":\"\",\n    \"login\":\"login9\",\n    \"password\":\"password\",\n    \"password2\":\"password\",\n    \"org_id\": null\n}"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/v1/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"v1",
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Login Admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"",
+							"// pm.environment.set(\"variable_key\", \"variable_value\");",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"response must be valid and have a body\", function () {",
+							"     pm.response.to.be.ok;",
+							"     pm.response.to.be.withBody;",
+							"     pm.response.to.be.json;",
+							"});",
+							"",
+							"pm.test(\"Token ok\", function () {",
+							"    var jsonData = pm.response.json().data;",
+							"    //console.log( jsonData )",
+							"    if (jsonData.login.access_token) {",
+							"        pm.environment.set(\"token\", jsonData.login.access_token);",
+							"        pm.environment.set(\"rtoken\", jsonData.login.refresh_token);",
+							"    } else {",
+							"        pm.environment.set(\"token\", \"\");",
+							"        pm.environment.set(\"rtoken\", \"\");",
+							"    }",
+							"    pm.expect(jsonData.login.access_token).not.empty;",
+							"    pm.expect(jsonData.login.refresh_token).not.empty;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "content-type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "x-hasura-admin-secret",
+						"type": "text",
+						"value": "myadminsecretkey",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query LoginQuery($password: String!, $username: String!, $scope: String = \"\", $client_secret: String = \"\", $client_id: String = \"\") {\n  login(password: $password, username: $username, client_id: $client_id, client_secret: $client_secret, scope: $scope) {\n    access_token\n    refresh_token\n    success\n    error\n    user_id\n    user {\n      id\n      login\n      name\n      password\n    }\n    expires_in\n    token_type\n  }\n}\n",
+						"variables": "{\n    \"client_id\":\"ios-v1\",\n    \"client_secret\":\"supersecret\",\n    \"scope\":\"scope1\",\n    \"username\":\"admin\",\n    \"password\":\"password\"\n}"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/v1/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"v1",
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Users",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "content-type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-hasura-admin-secret",
+						"value": "myadminsecretkey",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query MyQuery {\n  users {\n    id\n    login\n    name\n    password\n    role {\n        name\n    }\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/v1/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"v1",
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL User Profile",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "content-type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "x-hasura-admin-secret",
+						"type": "text",
+						"value": "myadminsecretkey",
+						"disabled": true
+					},
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query Profile {\n  profile {\n    user {\n      id\n      login\n      name\n      role {\n        name\n      }\n    }\n  }\n}\n",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/v1/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"v1",
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL User Refresh Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"",
+							"// pm.environment.set(\"variable_key\", \"variable_value\");",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"response must be valid and have a body\", function () {",
+							"     pm.response.to.be.ok;",
+							"     pm.response.to.be.withBody;",
+							"     pm.response.to.be.json;",
+							"});",
+							"",
+							"pm.test(\"Refresh Token ok\", function () {",
+							"    var jsonData = pm.response.json().data;",
+							"    //console.log( jsonData )",
+							"    if (jsonData.token.access_token) {",
+							"        pm.environment.set(\"token\", jsonData.token.access_token);",
+							"        pm.environment.set(\"rtoken\", jsonData.token.refresh_token);",
+							"    } else {",
+							"        // pm.environment.set(\"token\", \"\");",
+							"        // pm.environment.set(\"rtoken\", \"\");",
+							"    }",
+							"    pm.expect(jsonData.token.access_token).not.empty;",
+							"    pm.expect(jsonData.token.refresh_token).not.empty;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "content-type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "x-hasura-admin-secret",
+						"type": "text",
+						"value": "myadminsecretkey",
+						"disabled": true
+					},
+					{
+						"key": "Cache-Control",
+						"type": "text",
+						"value": "no-cache"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query Refresh_Token(\n    $client: String = \"\",\n    $client_secret: String = \"\",\n    $refresh_token: String = \"\"\n    ) {\n  token(client: $client,\n    client_secret: $client_secret,\n    refresh_token: $refresh_token) \n    {\n    access_token\n    error\n    success\n    refresh_token\n    expires_in\n    token_type\n    user_id\n  }\n}\n",
+						"variables": "{\n    \"client\":\"iOS Test Application\",\n    \"client_secret\":\"Super App password\",\n    \"refresh_token\":\"{{rtoken}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/v1/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"v1",
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Logout",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "content-type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-hasura-admin-secret",
+						"value": "myadminsecretkey",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query LogoutQuery {\n  logout {\n    error\n    success\n  }\n}\n",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/v1/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"v1",
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Unregister",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "content-type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "x-hasura-admin-secret",
+						"type": "text",
+						"value": "myadminsecretkey",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query Unregister {\n  unregister {\n    error\n    success\n  }\n}\n",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/v1/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"v1",
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
