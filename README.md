@@ -2,15 +2,19 @@
 
 ## Quick start
 
+**Pre-requisites** : docker, git, docker-compose must be installed.
+
     mkdir my-project
     cd my-project
     curl https://raw.githubusercontent.com/leaderit/graphql-postgres-template/main/configure.sh | bash -s --
 
-## Предупреждение
+## Warning
 
-Для обеспечения безопасности данных всегда используйте соединение HTTPS
+Always use HTTPS connection for keep your backend in secure.
 
-## Введение
+## Introduction
+
+**Russian** 
 
 Сервис интерфейса прикладнох программ на базе GraphQL интерфейса Hasura, сервера
 SQL PostgreSQL и обработчика бизнес логики на базе NodeJS сервера Fastify собран 
