@@ -2,4 +2,4 @@
 NAME=$(grep "^NAME=" .env | sed "s/NAME=//")
 # Тесты запускаются В Docker контейнере backend
 # Для прогона тесток сервисы должны быть запущены
-docker exec -ti $NAME-backend npm test $@
+docker exec --tty $NAME-backend npm test $@
