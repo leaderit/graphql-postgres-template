@@ -17,8 +17,8 @@ docker-compose down
 docker-compose up -d
 
 # Waiting until services will start fully
-echo Waiting fro start services ...
-until [ "$(curl http://localhost:8088/hasura/healthz) 2>/dev/null" = "OK" ]
+echo Waiting for start services ...
+until [ "$(curl http://localhost:8088/hasura/healthz)" = "OK" ]
 do
     sleep 3
 done
