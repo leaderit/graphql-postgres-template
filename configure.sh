@@ -1,4 +1,4 @@
-# !/bin/sh
+# !/bin/bash
 # Text color
 C_NRM="\033[0m"
 C_BLK="\033[30m"
