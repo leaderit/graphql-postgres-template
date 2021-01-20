@@ -17,12 +17,13 @@ docker-compose down
 docker-compose up -d
 
 # Waiting until services will start fully
-until [ "$(curl http://localhost:8088/hasura/healthz)" = "OK" ]
+echo Waiting fro start services ...
+until [ "$(curl http://localhost:8088/hasura/healthz) 2>/dev/null" = "OK" ]
 do
     sleep 3
 done
-
 sleep 10
+echo OK
 
 # database and metadata
 ./hasura-cli migrate apply
