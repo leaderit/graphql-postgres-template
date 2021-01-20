@@ -22,10 +22,12 @@ echo Waiting for start services ...
 until [ "$STARTED" = "OK" ]
 do
     STARTED=$(curl  -f -s http://localhost:8088/hasura/healthz)
-    echo /$STARTED/
+    echo ... 
+    #/$STARTED/
     sleep 3
 done
-sleep 15
+echo Waiting for database ...
+sleep 30
 echo OK
 
 # database and metadata
