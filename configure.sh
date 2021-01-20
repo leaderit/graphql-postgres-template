@@ -13,6 +13,7 @@ sed -i '' -e "s/NAME=.*/NAME=$PROJECT/" .env
 cd server
 npm install
 cd ..
+docker-compose down
 docker-compose up -d
 
 # database and metadata
