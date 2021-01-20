@@ -1,24 +1,4 @@
-# !/bin/bash
-# Text color
-C_NRM="\033[0m"
-C_BLK="\033[30m"
-C_RED="\033[31m"
-C_GRN="\033[32m"
-C_YEL="\033[33m"
-C_BLU="\033[34m"
-C_MAG="\033[35m"
-C_CYN="\033[36m"
-C_WHT="\033[37m"
-# Text backgound
-B_NRM="\033[0m"
-B_RED="\033[41m"
-B_GRN="\033[42m"
-B_YEL="\033[43m"
-B_BLU="\033[44m"
-B_MAG="\033[45m"
-B_CYN="\033[46m"
-B_WHT="\033[47m"
-
+# !/bin/sh
 # Set project name to current directory name
 PROJECT=$(pwd | grep -o '[^/]*$')
 
@@ -45,8 +25,8 @@ do
     printf %s "." 
     sleep 1
 done
-# echo  -e "${C_GRN} done ${C_NRM}"
-echo "\033[32m done \033[0m"
+echo " done "
+# echo "\033[32m done \033[0m"
 
 # database and metadata
 ./hasura-cli migrate apply
