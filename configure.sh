@@ -45,7 +45,7 @@ do
     printf %s "." 
     sleep 1
 done
-printf %s " ${C_GRN}done${C_NRM}"
+echo  "${C_GRN} done ${C_NRM}"
 
 # database and metadata
 ./hasura-cli migrate apply
