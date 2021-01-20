@@ -9,8 +9,6 @@ cp server/env-example server/.env
 # EDIT .env  and set NAME variable to "my-project"
 sed -i '' -e "s/NAME=.*/NAME=$PROJECT/" .env 
 
-exit
-
 # set other variables in apropriate values, espetialy passwords
 cd server
 npm install
