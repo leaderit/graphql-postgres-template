@@ -46,6 +46,31 @@
         column_mapping:
           owner_id: id
   select_permissions:
+  - role: owner
+    permission:
+      columns:
+      - id
+      - name
+      - filename
+      - owner_id
+      - org_id
+      - type
+      - public
+      - descr
+      - size
+      - group
+      - uploaded
+      - created_at
+      - updated_at
+      filter:
+        _or:
+        - owner_id:
+            _eq: X-Hasura-User-Id
+        - _and:
+          - org_id:
+              _eq: X-Hasura-Org-Id
+          - public:
+              _eq: true
   - role: user
     permission:
       columns:
@@ -71,6 +96,33 @@
               _eq: X-Hasura-Org-Id
           - public:
               _eq: true
+  update_permissions:
+  - role: owner
+    permission:
+      columns:
+      - descr
+      - filename
+      - group
+      - name
+      - public
+      - size
+      - type
+      - uploaded
+      filter: {}
+      check: null
+  - role: user
+    permission:
+      columns:
+      - descr
+      - filename
+      - group
+      - name
+      - public
+      - size
+      - type
+      - uploaded
+      filter: {}
+      check: null
 - table:
     schema: public
     name: orgs
