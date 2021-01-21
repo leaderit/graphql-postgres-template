@@ -5,6 +5,13 @@ type Mutation {
 }
 
 
+type Mutation {
+  cancelcode (
+    code_id: String!
+  ): CancelCode
+}
+
+
 type Query {
   fileurl (
     file_id: uuid!
@@ -133,5 +140,9 @@ type ConfirmationCode {
   code_id : String
   action : String!
   code : String
+}
+
+type CancelCode {
+  success : Boolean!
 }
 

@@ -10,6 +10,17 @@ actions:
   - role: orgadmin
   - role: owner
   - role: user
+- name: cancelcode
+  definition:
+    kind: synchronous
+    handler: '{{AUTH_BASE_URL}}/cancelcode'
+    forward_client_headers: true
+  permissions:
+  - role: anonymous
+  - role: manager
+  - role: orgadmin
+  - role: owner
+  - role: user
 - name: fileurl
   definition:
     kind: ""
@@ -118,4 +129,5 @@ custom_types:
       field_mapping:
         file_id: id
   - name: ConfirmationCode
+  - name: CancelCode
   scalars: []
