@@ -6,132 +6,6 @@
 	},
 	"item": [
 		{
-			"name": "Login-Logout",
-			"item": []
-		},
-		{
-			"name": "GaphQL user|all",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "x-hasura-admin-secret",
-						"value": "myadminsecretkey",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "graphql",
-					"graphql": {
-						"query": "query Users {\n  users {\n    id,\n    name,\n    login\n  }\n}",
-						"variables": ""
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8088/graphql",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8088",
-					"path": [
-						"graphql"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GaphQL user|by id",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "graphql",
-					"graphql": {
-						"query": "query MyQuery($id: uuid = \"\") {\n  users(where: {id: {_eq: $id}}) {\n    id\n    login\n    name\n    updated_at\n  }\n}",
-						"variables": " {\n     \"id\":\"9e74ce44-1ae6-11eb-ae92-8f6f1e8276cc\"\n }"
-					}
-				},
-				"url": {
-					"raw": "http://localhost:3003/api/graphql",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3003",
-					"path": [
-						"api",
-						"graphql"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "API Login",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"",
-							"",
-							"// pm.environment.set(\"variable_key\", \"variable_value\");",
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"pm.test(\"response must be valid and have a body\", function () {",
-							"     pm.response.to.be.ok;",
-							"     pm.response.to.be.withBody;",
-							"     pm.response.to.be.json;",
-							"});",
-							"",
-							"pm.test(\"Token ok\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    if (jsonData.token) {",
-							"        pm.environment.set(\"token\", jsonData.token);",
-							"    } else {",
-							"        pm.environment.set(\"token\", \"\");",
-							"    }",
-							"    pm.expect(jsonData.token).not.empty;",
-							"",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"username\":\"login1\",\n    \"password\":\"password1\"\n}\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:3003/api/auth/login",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3003",
-					"path": [
-						"api",
-						"auth",
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "API Upload File",
 			"event": [
 				{
@@ -647,68 +521,6 @@
 			"response": []
 		},
 		{
-			"name": "API Logout",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "",
-						"value": "",
-						"type": "text",
-						"disabled": true
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"username\":\"login1\",\n    \"password\":\"password1\"\n}\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:3003/api/auth/logout",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3003",
-					"path": [
-						"api",
-						"auth",
-						"logout"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Hasura test Direct",
 			"request": {
 				"method": "POST",
@@ -784,7 +596,36 @@
 			"response": []
 		},
 		{
-			"name": "GraphQL GetCode",
+			"name": "GraphQL AskCode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// pm.environment.set(\"variable_key\", \"variable_value\");",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"response must be valid and have a body\", function () {",
+							"     pm.response.to.be.ok;",
+							"     pm.response.to.be.withBody;",
+							"     pm.response.to.be.json;",
+							"});",
+							"",
+							"pm.test(\"Code ID is ok\", function () {",
+							"    var jsonData = pm.response.json().data;",
+							"    // console.log( jsonData )",
+							"    if (jsonData.askcode.code_id) {",
+							"        pm.environment.set(\"code_id\", jsonData.askcode.code_id);",
+							"    } ",
+							"    pm.expect(jsonData.askcode.code_id).not.empty;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -815,6 +656,54 @@
 					"graphql": {
 						"query": "mutation AskCode ( $action: String! ) {\n  askcode ( action: $action ) {\n    code_id\n    action\n    code\n  }\n}\n",
 						"variables": "{\n    \"action\":\"login\"\n}"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL CancelCode",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "content-type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "x-hasura-admin-secret",
+						"type": "text",
+						"value": "myadminsecretkey",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation CancelCode ( $code_id: String! ) {\n  cancelcode ( code_id: $code_id ) {\n    success\n  }\n}\n",
+						"variables": "{\n    \"code_id\":\"{{code_id}}\"\n}"
 					}
 				},
 				"url": {
