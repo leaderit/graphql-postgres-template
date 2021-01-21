@@ -14,6 +14,14 @@ Always use HTTPS connection for keep your backend in secure.
 
 ## Introduction
 
+The GraphQL application interface based on Hasura, PostgreSQL server and NodeJS framework Fastify 
+for custom busines logic. Al services composed into docker containers. 
+
+The Template goals:
+
+* Speed up a development of complex backedns for Web and Mobile applications. 
+* Make the development easy, secure and fail-safe.
+
 **Russian** 
 
 Сервис интерфейса прикладнох программ на базе GraphQL интерфейса Hasura, сервера
