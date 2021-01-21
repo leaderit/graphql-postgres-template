@@ -113,7 +113,7 @@ async function login( fastify, request, reply ) {
     })
     if ( data.data ) {
         if ( data.data.users.length == 1 && data.data.applications.length == 1 ) {
-            const user = data.data.users[0]
+            let user = data.data.users[0]
             // Проверить хеш пароля 
             let password = login.password
             if ( user.salt ) password = passwordHash( login.username, login.password, user.salt )
