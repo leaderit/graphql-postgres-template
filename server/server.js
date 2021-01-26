@@ -2,19 +2,16 @@
 
 // Require the framework
 const Fastify = require("fastify")
-
-// Instantiate Fastify with some config
-const app = Fastify({
-  logger: true,
-  pluginTimeout: 10000
-})
-
-// app.register(require('fastify-routes'))
+const config = require('./config')
+// Instantiate Fastify with the config
+const app = Fastify( config.app.fastify )
 app.register(require("./app.js"), {} )
 
 // Start listening.
 app.listen(
-  process.env.PORT || 3003, process.env.ADDRESS || "0.0.0.0" ,
+  config.app.port,
+  config.app.addr,
+  // process.env.PORT || 3003, process.env.ADDRESS || "0.0.0.0" ,
   (err) => {
     if (err) {
       app.log.error(err)
