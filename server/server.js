@@ -1,5 +1,5 @@
 "use strict"
-
+// require("dotenv").config()
 // Require the framework
 const Fastify = require("fastify")
 const config = require('./config')
@@ -11,7 +11,6 @@ app.register(require("./app.js"), {} )
 app.listen(
   config.app.port,
   config.app.addr,
-  // process.env.PORT || 3003, process.env.ADDRESS || "0.0.0.0" ,
   (err) => {
     if (err) {
       app.log.error(err)

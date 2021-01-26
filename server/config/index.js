@@ -15,5 +15,7 @@ const config = {
   sendmail: require('./sendmail')
 }
 
-// console.log( 'addr:', addr, 'cors:', config.cors.origin )
+// console.log( 'addr:', config.app.addr, 'cors:', config.cors.origin )
+// console.log( config.hasura )
+
 module.exports = config

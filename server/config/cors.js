@@ -1,3 +1,4 @@
+// CORS config
 const origin = process.env.ORIGIN || 'localhost:3000'
 
 module.exports = {
