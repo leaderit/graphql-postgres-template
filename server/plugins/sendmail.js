@@ -7,11 +7,11 @@ module.exports = fp(function (fastify, opts, next) {
   try {
     const mail = mailer.createTransport( opts.sendmail );
     fastify.decorate('mail', mail);
-    // Отправка письма
+    // Send an e-mail
     fastify.decorate('sendMail', function ( msg ) {
         const { mail } = fastify
         if ( opts.sendmail.disable || false ) {
-          console.log('Send mail disabled.')
+          console.log('Send a mail is disabled.')
           return;
         }
         mail.sendMail( msg,
