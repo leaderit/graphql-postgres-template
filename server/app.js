@@ -9,6 +9,7 @@ const config = require("./config")
 
 module.exports = function (fastify, opts, next) {
   // Place here your custom code!
+  fastify.decorate ( 'config', config )
   fastify.register(require('fastify-routes'))
   // Do not touch the following lines
 
