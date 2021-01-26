@@ -1,6 +1,11 @@
+#business logic server
 PROTOCOL=http
-# Работа в Docker + Hasura
 PORT=3000
 ADDRESS=0.0.0.0
 HASURA=http://hasura:8081/v1/graphql
 ORIGIN=http://localhost:3000 https://localhost:3000
+
+#sendmail
+SENDMAIL_SERVER=smtp.mail.com
+SENDMAIL_USER=user@mail.com
+SENDMAIL_PASSWORD=Strong_Password
