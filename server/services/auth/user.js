@@ -81,6 +81,7 @@ async function checkUser (request, reply) {
   request.user = user
   request.token = token
   request.authCode = code
+  console.log( 'REQ ', { code } )
   return
 }
 
@@ -89,5 +90,7 @@ module.exports = fp(function (fastify, opts, next) {
   fastify.decorateRequest('token', null ) 
   fastify.decorateRequest('user', null ) 
   fastify.decorateRequest('authCode', null ) 
+  // fastify.decorateRequest('checkAuthCode', null )
+  fastify.decorate('checkAuthCode', null )
   next()
 })
