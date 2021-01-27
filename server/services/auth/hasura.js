@@ -41,6 +41,8 @@ async function hasuraAuth(fastify, request, reply){
       // Applications Access
       "X-Hasura-Client": request.headers['x-hasura-client'] || '',
       "X-Hasura-Client-Secret": request.headers['x-hasura-client-secret'] || '',
+      // "Authorization-Code": request.headers['authorization-code'] || '',
+      // "authorization-code": request.headers['authorization-code'] || ''
   }
 }
 
