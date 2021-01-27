@@ -19,6 +19,26 @@ function authToken( request ){
   }
 }
 
+/*
+Извлечь и разобрать код авторизации из заголовка
+*/
+function authCode( request ){
+  const auth_code= request.headers['authorization-code'] || null
+  let code = null
+  let code_id = null
+
+  if ( auth_code ) {
+    const auth = auth_code.split(' ')
+    code = auth[1].trim()
+    code_id = auth[0].trim()
+  }
+
+  return {
+    code_id,
+    code 
+  }
+}
+
 // BEGIN X-Hasura-Token
 // Извлекаем токен из тела запроса
 // Этот блок нужен для извлечения токена из тела запроса от Hasura
@@ -46,6 +66,7 @@ async function checkUser (request, reply) {
   const fastify = this
   const { redis } = fastify
   var { token } = authToken(request)
+  const code = authCode(request)
   var key = 'token/'
   var user = null
 
@@ -59,6 +80,7 @@ async function checkUser (request, reply) {
   }
   request.user = user
   request.token = token
+  request.authCode = code
   return
 }
 
@@ -66,5 +88,6 @@ module.exports = fp(function (fastify, opts, next) {
   fastify.addHook('preHandler', checkUser )
   fastify.decorateRequest('token', null ) 
   fastify.decorateRequest('user', null ) 
+  fastify.decorateRequest('authCode', null ) 
   next()
 })
