@@ -9,9 +9,9 @@ async function askCode(fastify, request, reply)
         login: 6,
         unregister: 8
     }
-
+    const { config } = fastify
     const { redis } = fastify
-    const { codeLife } = fastify
+    const codeLife = config.auth.codeLife || 180
     const { sendCode } = fastify
     // const { createToken } = fastify
     const { user } = request
@@ -55,14 +55,20 @@ async function askCode(fastify, request, reply)
 }
 
 // Проверка кода подтверждения
-async function checkCode( fastify, code_id, action, code )
+const checkAuthCode = async function( request, action )
 {
+    const fastify = this
     const { redis } = fastify
+    const { config } = fastify
+    // const { authCode } = request
+    await new Promise(resolve => setTimeout(resolve, config.auth.codeCheckDelay * 1000 ));
+    console.log('CONTINUE', authCode )
 
-    const res = await redis.get( 'code/'+code_id )
+    const { authCode } = request
+    const res = await redis.get( 'code/'+request.authCode.code_id )
     if ( res ) {
         const data = JSON.parse( res )
-        if ( data.action === action & data.code === code ) return true
+        if ( data.action === action & data.code === request.authCode.code ) return true
     }
     return false;
 }
@@ -81,8 +87,10 @@ async function cancelCode( fastify, request, reply )
 
 module.exports = function (fastify, opts, next) 
 {
-    fastify.decorate ( 'codeLife', opts.auth.codeLife || 180 )
-    fastify.decorate ( 'checkCode', checkCode )
+    // fastify.decorate ( 'codeLife', opts.auth.codeLife || 180 )
+    checkAuthCode.bind( fastify )
+    // fastify.checkAuthCode = checkAuthCode
+    // fastify.decorate ( 'checkAuthCode', checkAuthCode )
 
     fastify.post('/askcode', 
         {
