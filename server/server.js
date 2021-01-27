@@ -1,7 +1,6 @@
 "use strict"
 require("dotenv").config()
 // Require the framework
-console.log( process.env )
 const Fastify = require("fastify")
 const config = require('./config')
 // Instantiate Fastify with the config
