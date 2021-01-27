@@ -40,11 +40,13 @@ async function askCode(fastify, request, reply)
     // Отправка кода
     if ( send_code ) {
         await redis.multi()
-        .setex('code/'+code_id, codeLife, JSON.stringify({ action, code }) )
+        .setex('code/'+code_id, codeLife, JSON.stringify({ user_id, action, code }) )
         .exec()
         // put code into sender queue
         if ( fastify.hasDecorator('sendCode') ) await fastify.sendCode( user, action, code )
     }
+    // if ( debug == 0 )
+    send_code = null
     return { 
         code_id,
         action,
