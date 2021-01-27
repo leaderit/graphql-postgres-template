@@ -75,6 +75,19 @@ async function login( fastify, request, reply ) {
     const { tokenLife } = fastify
     const { backendSecret } = fastify
     const login  = request.body.input
+    var authAction = true;
+
+    console.log( 'checkAuthCode=', fastify.checkAuthCode, request.authCode )
+    if ( fastify.checkAuthCode ) {
+        console.log('CHECK LOGIN')
+        authAction = fastify.checkAuthCode( request, 'login ')
+        if ( !authAction ) {     
+            return { 
+                success: false, 
+                error: 'incorrect user name or password or code'
+            }  
+        }
+    }
 
     const { data } = await hasura('', {
         query: //userLogin,
