@@ -1,7 +1,6 @@
 'use strict'
 
 const config = {
-  // nodeenv: process.env['NODE_ENV'] || 'development',
   app: require('./app'),
   websocket: require('./websocket'),
   static: require('./static'),
@@ -14,8 +13,4 @@ const config = {
   mail: require('./mail'),
   sendmail: require('./sendmail')
 }
-
-// console.log( 'addr:', config.app.addr, 'cors:', config.cors.origin )
-// console.log( config.hasura )
-
 module.exports = config
