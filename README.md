@@ -41,19 +41,19 @@ SQL PostgreSQL и обработчика бизнес логики на базе
 ## Функциональные возможности сервиса
 
 ...
-### Пользователи
+### Users
 
-### Роли
-
-
-### Организации
+### Roles
 
 
-### Пользователи организаций
+### Organisations (Companies, Business units, etc.)
+
+
+### Organisations Users
 
 
 
-### Файлы
+### Files
 - Загрузка файлов через POST form/data средствами сервера Nginx
 - Доступ к данным о файлах в соответствии с ролью
 - Доступ к статическому содержимому файлов через NGINX с проверкой прав доступа через Backend
@@ -63,7 +63,7 @@ SQL PostgreSQL и обработчика бизнес логики на базе
 - Кеширование запросов доступа к файлам, сокращение времени проверки доступа до 3-х раза при повторных запросах
 - Ограничение загрузки содержимого файлов с проверкой прав доступа через Backend перед приемом содержимого файла.
 
-### Приложения
+### Applications
 
 It the template you can not access to docker services directly by securitu reason.
 You can access to the template subsystems via Nginx proxy only.
@@ -77,13 +77,13 @@ Default endpoints for access services are:
 
 Details are in `img/nginx/default.conf`
 
-### Безопасность
+### Security
 
 ...
 
 ## Настройка
 
-### Подсистема Docker
+### Docker resources required
 
 Данная система в минимальной конфигурации расчитана на комфортную работу
 около 10 000 пользователей c одновременной активностью по количеству 
@@ -140,7 +140,7 @@ Details are in `img/nginx/default.conf`
 
     docker-compose up -d
 
-### Настройка базы данных
+### Database setup
 
 После запуска сервисов будеет создана пустая база данных `PostgreSQL` в папке db/postgres
 и `Redis` в папке db/redis.
@@ -255,4 +255,4 @@ Details are in `img/nginx/default.conf`
 
 ## Copyrights
 
-(c) Valerii Grazhdankin, Moscow, Russia
+(c) Valerii Grazhdankin, Moscow, Russia, 2020-2021
