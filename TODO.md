@@ -10,6 +10,20 @@
 - Добавить в files поле storage - для указания хранилища и location для указания места размещения распределенного хранилища этого файла. Это добавить  в будущем возможность перемещать файл между размещениями хранилища прозрачно для клиента и выдавать ему правильный url для скачивания
 - Добавить обработку storage и location для backend
 
+### File Storage
+
+#### Distributed Storage Min.IO
+- upload
+- download
+- access to a file
+- check access rights
+- get object url
+- delete
+- move
+
+#### Persistent storage via nginx get
+- Access via nginx url
+
 ### Обслуживание
 - Добавить проверку мусора в хранилище
 - Добавить очистку папки временного хранения данных загрузки
