@@ -13,6 +13,7 @@
 ### File Storage
 
 #### Distributed Storage Min.IO
+- TESTS
 - upload
 - download
 - access to a file
@@ -22,6 +23,7 @@
 - move
 
 #### Persistent storage via nginx get
+- TESTS
 - Access via nginx url
 
 ### Обслуживание
