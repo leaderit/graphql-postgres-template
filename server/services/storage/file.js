@@ -210,12 +210,11 @@ function getFieldValue( body, name, def = null ){
   return ( body[name] || { value: def }).value
 }
 
-// Обработка загруженного пользователем файла
+// Handle a file loaded via Nginx
 async function fileUploaded(fastify, request, reply){
   const { redis } = fastify
   const { user } = request
   const { body } = request
-  // const file_id = request.headers['x-file-id']
 
   if ( body ) {
     const file = {
@@ -283,7 +282,7 @@ module.exports = function (fastify, opts, next) {
     reply.send( await fileAccess(fastify, request, reply) )
   })
 
-  // Вызывается из PROXY для проверки прав доступа к на загрузку файла
+  // Вызывается из PROXY для проверки прав доступа на загрузку файла
   fastify.get('/access-up/', async function (request, reply) 
   {
     reply.send( await fileUploadAccess(fastify, request, reply) )
@@ -295,7 +294,6 @@ module.exports = function (fastify, opts, next) {
     const result = await fileUploaded(fastify, request, reply)
     if ( !result.uploaded ) reply.code(422)
     reply.send( result )
-    // console.log('.\n.\n.\n.\n.\n.\n.\n')
   })
 
   next()
