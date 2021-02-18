@@ -3,8 +3,8 @@
 const path = require('path')
 const AutoLoad = require('fastify-autoload')
 
-// Read the .env file.
-require("dotenv").config()
+// // Read the .env file.
+// require("dotenv").config()
 const config = require("./config")
 
 module.exports = function (fastify, opts, next) {
