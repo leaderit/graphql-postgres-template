@@ -70,6 +70,38 @@ actions:
   permissions:
   - role: anonymous
   - role: backend
+- name: storage_files
+  definition:
+    kind: ""
+    handler: '{{BACKEND_BASE_URL}}/s3/io'
+    forward_client_headers: true
+  permissions:
+  - role: backend
+  - role: manager
+  - role: orgadmin
+  - role: owner
+  - role: user
+- name: storage_fileurl
+  definition:
+    kind: ""
+    handler: '{{BACKEND_BASE_URL}}/s3/io'
+    forward_client_headers: true
+- name: storage_newfile
+  definition:
+    kind: ""
+    handler: '{{BACKEND_BASE_URL}}/s3/io'
+    forward_client_headers: true
+- name: storages
+  definition:
+    kind: ""
+    handler: '{{BACKEND_BASE_URL}}/s3/io'
+    forward_client_headers: true
+  permissions:
+  - role: backend
+  - role: manager
+  - role: orgadmin
+  - role: owner
+  - role: user
 - name: token
   definition:
     kind: ""
@@ -130,4 +162,11 @@ custom_types:
         file_id: id
   - name: ConfirmationCode
   - name: CancelCode
+  - name: StorageOutput
+  - name: StorageBuckets
+  - name: Storages
+  - name: Files
+  - name: File
+  - name: NewFile
+  - name: FileUrl
   scalars: []

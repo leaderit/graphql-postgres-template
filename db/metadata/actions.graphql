@@ -60,6 +60,37 @@ type Query {
 
 
 type Query {
+  storage_files (
+    storage: String!
+    path: String!
+  ): [File]
+}
+
+
+type Query {
+  storage_fileurl (
+    storage: String!
+    path: String!
+    name: String!
+  ): FileUrl
+}
+
+
+type Query {
+  storage_newfile (
+    storage: String!
+    path: String!
+    name: String
+  ): NewFile
+}
+
+
+type Query {
+  storages : [Storages]
+}
+
+
+type Query {
   token (
     client: String
     client_secret: String
@@ -144,5 +175,39 @@ type ConfirmationCode {
 
 type CancelCode {
   success : Boolean!
+}
+
+type StorageOutput {
+  file_id : uuid!
+  url : String
+  result : String
+}
+
+type StorageBuckets {
+  name : String!
+  creationDate : String
+}
+
+type Storages {
+  name : String
+  creationDate : String
+}
+
+type Files {
+  name : String!
+}
+
+type File {
+  name : String!
+  size : Int
+  is_directory : Boolean
+}
+
+type NewFile {
+  url : String
+}
+
+type FileUrl {
+  url : String!
 }
 

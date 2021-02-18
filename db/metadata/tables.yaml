@@ -45,6 +45,27 @@
           name: users
         column_mapping:
           owner_id: id
+  insert_permissions:
+  - role: user
+    permission:
+      check: {}
+      set:
+        org_id: x-hasura-Org-Id
+        owner_id: x-hasura-User-Id
+      columns:
+      - descr
+      - filename
+      - group
+      - location_id
+      - name
+      - org_id
+      - owner_id
+      - public
+      - size
+      - storage_id
+      - type
+      - uploaded
+      backend_only: false
   select_permissions:
   - role: owner
     permission:
