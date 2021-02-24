@@ -13,6 +13,7 @@
   },
   "scripts": {
     "test": "tap -t36000 test/**/*.test.js",
+    "test1": "tap -t36000 ",
     "start": "fastify start -l info server.js",
     "dev": "fastify start -w -l info -P server.js"
   },
