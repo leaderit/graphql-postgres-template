@@ -120,3 +120,5 @@ dist
 # common
 !.gitkeep
 !README.md
+
+server/test/test-video-big.mp4
