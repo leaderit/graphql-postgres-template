@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "files",
+			"name": "files (do Login first)",
 			"item": [
 				{
 					"name": "GraphQL Storages",
@@ -49,14 +49,13 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8081/v1/graphql",
+							"raw": "http://localhost:8088/graphql",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8081",
+							"port": "8088",
 							"path": [
-								"v1",
 								"graphql"
 							]
 						}
@@ -104,14 +103,13 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8081/v1/graphql",
+							"raw": "http://localhost:8088/graphql",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8081",
+							"port": "8088",
 							"path": [
-								"v1",
 								"graphql"
 							]
 						}
@@ -205,13 +203,14 @@
 					"response": []
 				},
 				{
-					"name": "Storage file Upload via PUT",
+					"name": "Storage file Upload via PUT request",
 					"event": [
 						{
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"console.log('ok', pm.environment.get(\"newfile_url\"))"
+									"const url = pm.environment.get(\"newfile_url\")",
+									"pm.request.url = url"
 								],
 								"type": "text/javascript"
 							}
@@ -219,25 +218,26 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "PUT",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": ""
+							"mode": "file",
+							"file": {
+								"src": "/Users/vg/Movies/vsms-ht-logo.mp4"
+							}
 						},
 						"url": {
-							"raw": "{{newfile_url}}",
+							"raw": "http://localhost:8088/s3/",
+							"protocol": "http",
 							"host": [
-								"{{newfile_url}}"
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"s3",
+								""
 							]
 						}
 					},
@@ -264,12 +264,12 @@
 									"pm.test(\"url ok\", function () {",
 									"    var jsonData = pm.response.json().data;",
 									"    //console.log( jsonData )",
-									"    if (jsonData.storage_newfile.url) {",
-									"        pm.environment.set(\"newfile_url\", jsonData.storage_newfile.url);",
+									"    if (jsonData.storage_fileurl.url) {",
+									"        pm.environment.set(\"file_url\", jsonData.storage_fileurl.url);",
 									"    } else {",
-									"        pm.environment.set(\"newfile_url\", \"\");",
+									"        pm.environment.set(\"file_url\", \"\");",
 									"    }",
-									"    pm.expect(jsonData.storage_newfile.url).not.empty;",
+									"    pm.expect(jsonData.storage_fileurl.url).not.empty;",
 									"});"
 								],
 								"type": "text/javascript"
@@ -310,19 +310,18 @@
 						"body": {
 							"mode": "graphql",
 							"graphql": {
-								"query": "query StorageFileUrl($path: String! = \"\", $name: String = \"\", $storage: String! = \"\") {\n  storage_fileurl(path: $path, storage: $storage, name: $name) {\n    url\n  }\n}\n",
+								"query": "query StorageFileUrl($path: String! = \"\", $name: String! = \"\", $storage: String! = \"\") {\n  storage_fileurl(path: $path, storage: $storage, name: $name) {\n    url\n  }\n}\n",
 								"variables": "{\n    \"path\":\"\",\n    \"storage\":\"users\",\n    \"name\":\"newfile.mp4\"\n}"
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8081/v1/graphql",
+							"raw": "http://localhost:8088/graphql",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8081",
+							"port": "8088",
 							"path": [
-								"v1",
 								"graphql"
 							]
 						}
@@ -330,86 +329,44 @@
 					"response": []
 				},
 				{
-					"name": "GraphQL Storage File URL",
+					"name": "Storage GET file",
 					"event": [
 						{
-							"listen": "test",
+							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"// pm.environment.set(\"variable_key\", \"variable_value\");",
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"",
-									"pm.test(\"response must be valid and have a body\", function () {",
-									"     pm.response.to.be.ok;",
-									"     pm.response.to.be.withBody;",
-									"     pm.response.to.be.json;",
-									"});",
-									"",
-									"pm.test(\"url ok\", function () {",
-									"    var jsonData = pm.response.json().data;",
-									"    //console.log( jsonData )",
-									"    if (jsonData.storage_newfile.url) {",
-									"        pm.environment.set(\"newfile_url\", jsonData.storage_newfile.url);",
-									"    } else {",
-									"        pm.environment.set(\"newfile_url\", \"\");",
-									"    }",
-									"    pm.expect(jsonData.storage_newfile.url).not.empty;",
-									"});"
+									"const url = pm.environment.get(\"file_url\")",
+									"pm.request.url = url"
 								],
 								"type": "text/javascript"
 							}
 						}
 					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "content-type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "x-hasura-admin-secret",
-								"value": "myadminsecretkey",
-								"type": "text",
-								"disabled": true
-							},
-							{
-								"key": "",
-								"value": "",
-								"type": "text",
-								"disabled": true
-							}
-						],
+						"method": "GET",
+						"header": [],
 						"body": {
-							"mode": "graphql",
-							"graphql": {
-								"query": "query StorageNewFile($path: String! = \"\", $name: String = \"\", $storage: String! = \"\") {\n  storage_newfile(path: $path, storage: $storage, name: $name) {\n    url\n  }\n}\n",
-								"variables": "{\n    \"path\":\"\",\n    \"storage\":\"users\",\n    \"name\":\"newfile.mp4\"\n}"
+							"mode": "file",
+							"file": {
+								"src": "/Users/vg/Movies/vsms-ht-logo.mp4"
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8081/v1/graphql",
+							"raw": "http://localhost:8088/s3/",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8081",
+							"port": "8088",
 							"path": [
-								"v1",
-								"graphql"
+								"s3",
+								""
 							]
 						}
 					},
@@ -558,135 +515,6 @@
 							],
 							"port": "8088",
 							"path": [
-								"upload"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "API Upload File via https://dev2x.leaderit.ru/devapi/",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"",
-									"",
-									"// pm.environment.set(\"variable_key\", \"variable_value\");",
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"",
-									"pm.test(\"response must be valid and have a body\", function () {",
-									"     pm.response.to.be.ok;",
-									"     pm.response.to.be.withBody;",
-									"     pm.response.to.be.json;",
-									"});",
-									"",
-									"// pm.test(\"Token ok\", function () {",
-									"//     var jsonData = pm.response.json();",
-									"//     if (jsonData.token) {",
-									"//         pm.environment.set(\"token\", jsonData.token);",
-									"//     } else {",
-									"//         pm.environment.set(\"token\", \"\");",
-									"//     }",
-									"//     pm.expect(jsonData.token).not.empty;",
-									"",
-									"// });",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "X-File-ID",
-								"value": "81fc512a-4236-11eb-96d1-975577b0463c",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": "/Users/vg/Pictures/vg-small.jpg",
-									"disabled": true
-								},
-								{
-									"key": "file",
-									"type": "file",
-									"src": "/Users/vg/Pictures/mstruve-avatar-small.jpg"
-								},
-								{
-									"key": "file",
-									"type": "file",
-									"src": "/Users/vg/Movies/vsms-ht-logo.mp4",
-									"disabled": true
-								},
-								{
-									"key": "file_id",
-									"value": "81fc512a-4236-11eb-96d1-975577b0463c",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "file_group",
-									"value": "user",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "file_group",
-									"value": "org",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "file_group",
-									"value": "public",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "file",
-									"description": "BIG FILE",
-									"type": "file",
-									"src": "/Users/vg/Movies/MBfin.mp4",
-									"disabled": true
-								}
-							],
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://dev2x.leaderit.ru/devapi/upload",
-							"protocol": "https",
-							"host": [
-								"dev2x",
-								"leaderit",
-								"ru"
-							],
-							"path": [
-								"devapi",
 								"upload"
 							]
 						}
@@ -846,138 +674,6 @@
 							"port": "8088",
 							"path": [
 								"upload-progress"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "API Get File via https://dev2x.leaderit.ru/devapi/",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"",
-									"",
-									"// pm.environment.set(\"variable_key\", \"variable_value\");",
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"",
-									"// pm.test(\"response must be valid and have a body\", function () {",
-									"//      pm.response.to.be.ok;",
-									"//      pm.response.to.be.withBody;",
-									"//      pm.response.to.be.json;",
-									"// });",
-									"",
-									"// pm.test(\"Token ok\", function () {",
-									"//     var jsonData = pm.response.json();",
-									"//     if (jsonData.token) {",
-									"//         pm.environment.set(\"token\", jsonData.token);",
-									"//     } else {",
-									"//         pm.environment.set(\"token\", \"\");",
-									"//     }",
-									"//     pm.expect(jsonData.token).not.empty;",
-									"",
-									"// });",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disabledSystemHeaders": {
-							"content-length": true,
-							"content-type": true
-						}
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "file_id",
-								"type": "text",
-								"value": "81fc512a-4236-11eb-96d1-975577b0463c",
-								"disabled": true
-							}
-						],
-						"url": {
-							"raw": "https://dev2x.leaderit.ru/devapi/storage/81fc512a-4236-11eb-96d1-975577b0463c",
-							"protocol": "https",
-							"host": [
-								"dev2x",
-								"leaderit",
-								"ru"
-							],
-							"path": [
-								"devapi",
-								"storage",
-								"81fc512a-4236-11eb-96d1-975577b0463c"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "PUT",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "file",
-							"file": {
-								"src": "/Users/vg/Pictures/mstruve-avatar.jpg"
-							}
-						},
-						"url": {
-							"raw": "http://localhost:9000/users/video/mstruve-avatar.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=Q3AM3UQ867SPQQA43P2F%2F20210218%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210218T033938Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=e95d8ac079e53ae5cf22b820bcf6410eafa0904e49f61aa4521b167ee39acf78",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9000",
-							"path": [
-								"users",
-								"video",
-								"mstruve-avatar.jpg"
-							],
-							"query": [
-								{
-									"key": "X-Amz-Algorithm",
-									"value": "AWS4-HMAC-SHA256"
-								},
-								{
-									"key": "X-Amz-Credential",
-									"value": "Q3AM3UQ867SPQQA43P2F%2F20210218%2Fus-east-1%2Fs3%2Faws4_request"
-								},
-								{
-									"key": "X-Amz-Date",
-									"value": "20210218T033938Z"
-								},
-								{
-									"key": "X-Amz-Expires",
-									"value": "86400"
-								},
-								{
-									"key": "X-Amz-SignedHeaders",
-									"value": "host"
-								},
-								{
-									"key": "X-Amz-Signature",
-									"value": "e95d8ac079e53ae5cf22b820bcf6410eafa0904e49f61aa4521b167ee39acf78"
-								}
 							]
 						}
 					},
