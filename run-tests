@@ -1,5 +1,12 @@
 #! /bin/bash
 NAME=$(grep "^NAME=" .env | sed "s/NAME=//")
-# Тесты запускаются В Docker контейнере backend
-# Для прогона тесток сервисы должны быть запущены
-docker exec --tty $NAME-backend npm test $@
+# Tests run in the backend Docker container
+# All services MUST be run
+# Command line parameter used for run specific tests only - usefull for debug
+if [ -z $1  ]
+then
+    docker exec --tty $NAME-backend npm test
+else
+    docker exec --tty $NAME-backend npm run test1 $@
+fi
+
