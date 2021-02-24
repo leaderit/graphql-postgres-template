@@ -76,7 +76,7 @@ type Query {
 }
 
 
-type Query {
+type Mutation {
   storage_newfile (
     storage: String!
     path: String!
@@ -209,5 +209,10 @@ type NewFile {
 
 type FileUrl {
   url : String!
+}
+
+type NameValue {
+  name : String!
+  value : String
 }
 

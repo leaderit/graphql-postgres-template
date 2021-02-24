@@ -86,11 +86,23 @@ actions:
     kind: ""
     handler: '{{BACKEND_BASE_URL}}/s3/io'
     forward_client_headers: true
+  permissions:
+  - role: backend
+  - role: manager
+  - role: orgadmin
+  - role: owner
+  - role: user
 - name: storage_newfile
   definition:
-    kind: ""
+    kind: synchronous
     handler: '{{BACKEND_BASE_URL}}/s3/io'
     forward_client_headers: true
+  permissions:
+  - role: backend
+  - role: manager
+  - role: orgadmin
+  - role: owner
+  - role: user
 - name: storages
   definition:
     kind: ""
@@ -169,4 +181,5 @@ custom_types:
   - name: File
   - name: NewFile
   - name: FileUrl
+  - name: NameValue
   scalars: []
