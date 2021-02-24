@@ -50,7 +50,9 @@ async function storage_newfile(fastify, args) {
 
 async function storage_fileurl(fastify, args) {
   const storage = fastify.s3storage
-  const path = await storage.presignedGetObject(args.storage, args.path+args.name, 24*60*60)
+  const expires = args.expires || 1 * 60 * 60 // do from config
+
+  const path = await storage.presignedGetObject(args.storage, args.path+args.name, expires )
   const url = path.replace('http://storage:9000', 'http://localhost:8088/s3')
   return {
     url
@@ -121,6 +123,11 @@ async function s3io( fastify, request, reply ){
   return []
 }
 
+async function s3access( fastify, request, reply ){
+  console.log( { headers: request.headers, body: request.body } )
+  return ''
+}
+
 module.exports = function (fastify, opts, next) {
   // start.bind( fastify )
 
@@ -132,6 +139,11 @@ module.exports = function (fastify, opts, next) {
   fastify.post('/io', async function (request, reply) 
   {
     reply.send( await s3io(fastify, request, reply) )
+  })
+    
+  fastify.get('/access', async function (request, reply) 
+  {
+    reply.send( await s3access(fastify, request, reply) )
   })
     
   next()
