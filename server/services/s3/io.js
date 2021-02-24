@@ -124,8 +124,27 @@ async function s3io( fastify, request, reply ){
 }
 
 async function s3access( fastify, request, reply ){
-  console.log( { headers: request.headers, body: request.body } )
-  return ''
+  const { redis } = fastify
+  const { user } = request
+  let filePath = null
+  let url = null
+  let access = true
+  let storage = null
+  let file = null
+  let orig = request.headers['X-Original-URI']
+
+  url = orig.replace('/s3/', 's3internal')
+  console.log( { orig, url, headers: request.headers, body: request.body } )
+
+  if ( access ) {
+    reply.headers({
+      'X-Accel-Redirect': url, 
+      'Content-Type': storage.type
+    })
+    return ''
+  }
+  reply.code(404)
+  return '' 
 }
 
 module.exports = function (fastify, opts, next) {
@@ -140,11 +159,18 @@ module.exports = function (fastify, opts, next) {
   {
     reply.send( await s3io(fastify, request, reply) )
   })
-    
+
+  // Вызывается из PROXY для проверки прав доступа к файлу    
   fastify.get('/access', async function (request, reply) 
   {
     reply.send( await s3access(fastify, request, reply) )
   })
+
+  // // Вызывается из PROXY для проверки прав доступа к файлу
+  // fastify.get('/access/:file_id', async function (request, reply) 
+  // {
+  //   reply.send( await fileAccess(fastify, request, reply) )
+  // })
     
   next()
 }
