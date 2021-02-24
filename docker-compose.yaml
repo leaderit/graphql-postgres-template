@@ -143,6 +143,12 @@ services:
     environment:
       MINIO_ROOT_USER: ${STORAGE_USER}
       MINIO_ROOT_PASSWORD: ${STORAGE_SECRET}
+      MINIO_REGION_NAME: "my_region"
+      #
+      # MINIO_STORAGE_CLASS_STANDARD: "EC:4"   # set the parity count for default standard storage class e.g. "EC:4"
+      # MINIO_STORAGE_CLASS_RRS: "EC:2"        # set the parity count for reduced redundancy storage class e.g. "EC:2"
+      # MINIO_STORAGE_CLASS_COMMENT: "STD=4, RRS=2"  
+
     command: server /data
     # command: server http://minio{1...4}/data{1...2}
     healthcheck:
