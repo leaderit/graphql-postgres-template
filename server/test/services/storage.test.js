@@ -13,14 +13,16 @@ const fs = require('fs');
 
 var stream, url, file, size
 
+const tmpStorage = 'storage-9e74ce44-1ae6-11eb-ae92-8f6f1e8276cc'
+
 const file_video = {
-  storage:'public',
+  storage: tmpStorage,
   path:'video/',
   name:'test-video.mp4'
 }
 
 const file_img = {
-  storage:'public',
+  storage: tmpStorage,
   path:'img/',
   name:'test-image.jpg'
 }
@@ -63,6 +65,23 @@ await test('TEST: Storage', async (t) => {
   )
   t.type(rc.data, 'object', 'Error storages answer')
   t.type(rc.data.storages, 'object', 'error storages list')
+
+  /// Create New Storage
+  rc = await graphql(
+    {
+        query: storage.newStorage,
+        variables: {
+          storage: tmpStorage,
+          region:'Earth'
+        }
+    },
+    {
+        'Authorization':'Beared ' + access_token
+    }
+  )
+  t.type(rc.data, 'object', 'Error storages answer')
+  t.type(rc.data.storage_new, 'object', 'error storages list')
+  t.equal(rc.data.storage_new.success, true, 'New Storage Error')
 
 /// UPLOAD IMAGE  
   rc = await graphql(
@@ -135,7 +154,48 @@ rc = await axios({
 
 t.equal(rc.status, 200, 'Upload Error')
 
+/// remove File
+rc = await graphql(
+  {
+      query: storage.removeFile,
+      variables: file_video
+  },
+  {
+      'Authorization':'Beared ' + access_token
+  }
+)
+t.type(rc.data, 'object', 'Error answer')
+t.type(rc.data.storage_rmfile, 'object', 'error data')
+t.equal(rc.data.storage_rmfile.success, true, 'Remove File Error')
 
+rc = await graphql(
+  {
+      query: storage.removeFile,
+      variables: file_img
+  },
+  {
+      'Authorization':'Beared ' + access_token
+  }
+)
+t.type(rc.data, 'object', 'Error answer')
+t.type(rc.data.storage_rmfile, 'object', 'error data')
+t.equal(rc.data.storage_rmfile.success, true, 'Remove File Error')
+
+  /// Delete Storage
+  rc = await graphql(
+    {
+        query: storage.removeStorage,
+        variables: {
+          storage: tmpStorage,
+        }
+    },
+    {
+        'Authorization':'Beared ' + access_token
+    }
+  )
+  t.type(rc.data, 'object', 'Error storages answer')
+  t.type(rc.data.storage_rm, 'object', 'error storages list')
+  t.equal(rc.data.storage_rm.success, true, 'New Storage Error')
 
   ///
   rc = await graphql(
