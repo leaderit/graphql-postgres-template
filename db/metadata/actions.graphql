@@ -59,6 +59,18 @@ type Query {
 }
 
 
+type Mutation {
+  storage_cpfile (
+    storage: String!
+    path: String
+    name: String!
+    to_storage: String!
+    to_path: String
+    to_name: String!
+  ): Result
+}
+
+
 type Query {
   storage_files (
     storage: String!
@@ -77,11 +89,47 @@ type Query {
 
 
 type Mutation {
+  storage_mvfile (
+    storage: String!
+    path: String
+    name: String!
+    to_storage: String!
+    to_path: String
+    to_name: String!
+  ): Result
+}
+
+
+type Mutation {
+  storage_new (
+    storage: String!
+    region: String!
+  ): Result
+}
+
+
+type Mutation {
   storage_newfile (
     storage: String!
     path: String!
     name: String
   ): NewFile
+}
+
+
+type Mutation {
+  storage_rm (
+    storage: String!
+  ): Result
+}
+
+
+type Mutation {
+  storage_rmfile (
+    storage: String!
+    path: String
+    name: String!
+  ): Result
 }
 
 
@@ -214,5 +262,17 @@ type FileUrl {
 type NameValue {
   name : String!
   value : String
+}
+
+type RmFile {
+  success : Boolean!
+}
+
+type MvFile {
+  success : Boolean!
+}
+
+type Storage {
+  storage : String!
 }
 

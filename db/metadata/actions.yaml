@@ -70,6 +70,11 @@ actions:
   permissions:
   - role: anonymous
   - role: backend
+- name: storage_cpfile
+  definition:
+    kind: synchronous
+    handler: '{{BACKEND_BASE_URL}}/s3/io'
+    forward_client_headers: true
 - name: storage_files
   definition:
     kind: ""
@@ -92,6 +97,16 @@ actions:
   - role: orgadmin
   - role: owner
   - role: user
+- name: storage_mvfile
+  definition:
+    kind: synchronous
+    handler: '{{BACKEND_BASE_URL}}/s3/io'
+    forward_client_headers: true
+- name: storage_new
+  definition:
+    kind: synchronous
+    handler: '{{BACKEND_BASE_URL}}/s3/io'
+    forward_client_headers: true
 - name: storage_newfile
   definition:
     kind: synchronous
@@ -103,6 +118,16 @@ actions:
   - role: orgadmin
   - role: owner
   - role: user
+- name: storage_rm
+  definition:
+    kind: synchronous
+    handler: '{{BACKEND_BASE_URL}}/s3/io'
+    forward_client_headers: true
+- name: storage_rmfile
+  definition:
+    kind: synchronous
+    handler: '{{BACKEND_BASE_URL}}/s3/io'
+    forward_client_headers: true
 - name: storages
   definition:
     kind: ""
@@ -135,6 +160,7 @@ actions:
   definition:
     kind: synchronous
     handler: '{{BACKEND_BASE_URL}}/media/upload'
+    forward_client_headers: true
 custom_types:
   enums: []
   input_objects:
@@ -182,4 +208,7 @@ custom_types:
   - name: NewFile
   - name: FileUrl
   - name: NameValue
+  - name: RmFile
+  - name: MvFile
+  - name: Storage
   scalars: []
