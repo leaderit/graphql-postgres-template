@@ -9,7 +9,115 @@
 			"name": "files (do Login first)",
 			"item": [
 				{
+					"name": "GraphQL Create Storage (Login as Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-hasura-admin-secret",
+								"value": "myadminsecretkey",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query Storages {\n  storages {\n    creationDate\n    name\n  }\n}\n",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8088/graphql",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "GraphQL Storages",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-hasura-admin-secret",
+								"value": "myadminsecretkey",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query Storages {\n  storages {\n    creationDate\n    name\n  }\n}\n",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8088/graphql",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GraphQL Delete Storage (Login as Admin)",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -329,7 +437,7 @@
 					"response": []
 				},
 				{
-					"name": "Storage GET file",
+					"name": "Storage GET file by URL",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -373,7 +481,61 @@
 					"response": []
 				},
 				{
-					"name": "API Upload File",
+					"name": "GraphQL Storage Delete File",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-hasura-admin-secret",
+								"value": "myadminsecretkey",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query Storages {\n  storages {\n    creationDate\n    name\n  }\n}\n",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8088/graphql",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8088",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API Upload local File",
 					"event": [
 						{
 							"listen": "test",
@@ -522,7 +684,7 @@
 					"response": []
 				},
 				{
-					"name": "API Get File",
+					"name": "API Get local File",
 					"event": [
 						{
 							"listen": "test",
@@ -599,7 +761,7 @@
 					"response": []
 				},
 				{
-					"name": "API Upload Progress",
+					"name": "API local file Upload Progress",
 					"event": [
 						{
 							"listen": "test",
