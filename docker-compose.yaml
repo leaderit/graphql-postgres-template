@@ -140,6 +140,12 @@ services:
     restart: always
     volumes:
       - ./cloud:/data
+    # 4 Disks distributed configuration
+      - ./cloud4x/data1:/data1
+      - ./cloud4x/data2:/data2
+      - ./cloud4x/data3:/data3
+      - ./cloud4x/data4:/data4
+
     environment:
       MINIO_ROOT_USER: ${STORAGE_USER}
       MINIO_ROOT_PASSWORD: ${STORAGE_SECRET}
@@ -149,7 +155,8 @@ services:
       # MINIO_STORAGE_CLASS_RRS: "EC:2"        # set the parity count for reduced redundancy storage class e.g. "EC:2"
       # MINIO_STORAGE_CLASS_COMMENT: "STD=4, RRS=2"  
 
-    command: server /data
+    command: server /data{1...4}
+    # command: server /data
     # command: server http://minio{1...4}/data{1...2}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
