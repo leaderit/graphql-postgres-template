@@ -14,6 +14,7 @@ const fs = require('fs');
 var stream, url, file, size
 
 const tmpStorage = 'storage-9e74ce44-1ae6-11eb-ae92-8f6f1e8276cc'
+const region = 'my_region'
 
 const file_video = {
   storage: tmpStorage,
@@ -72,7 +73,7 @@ await test('TEST: Storage', async (t) => {
         query: storage.newStorage,
         variables: {
           storage: tmpStorage,
-          region:'Earth'
+          region
         }
     },
     {
