@@ -39,6 +39,11 @@ SQL PostgreSQL и обработчика бизнес логики на базе
 - Многое другое
 
 ## Функциональные возможности сервиса
+## Registrations and Authorisations
+
+The template provides a GraphQL API for this, described in
+
+[Registration and Authorisation](doc/AUTH.md)
 
 ...
 ### Users
