@@ -14,13 +14,9 @@
 
 #### Distributed Storage Min.IO
 - TESTS
-- upload
-- download
-- access to a file
-- check access rights
-- get object url
-- delete
-- move
+- check an object's access rights, based on user_id, user_group, org_id
+- List of an unfinished uploads
+- Clear for unfinished uploads
 
 #### Persistent storage via nginx get
 - TESTS
@@ -30,7 +26,7 @@
 - Добавить проверку мусора в хранилище
 - Добавить очистку папки временного хранения данных загрузки
 
-### Безопасность
+### Security
 
 - Смена пароля пользователем
 - Добавить очистку кеша при обновлении полей files.storage/ files.location или удалении файла
