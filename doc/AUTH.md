@@ -8,9 +8,6 @@ For Authtorisation and registration queries you may provide
 For other queries you must provide `Authorisation` header with Bearer token, returned
 from Register or Login queries. If you business logic needs, you may
 send `Authorisation-Code` header and check confirmation of the operation
-
-
-
 before continue an destructive or important action.
 
 ### Request Headers:
@@ -19,6 +16,8 @@ before continue an destructive or important action.
         Authorisation: {{token_type}} {{token}},    // Token from login request
         Authorisation-Code: {{code_id}} {{code}}    // code_id from Asking code request and code, provided by user
     }
+
+Token type is `Bearer` for the template, or any other for your own AUTH realization.
 
 ### Login Headers:
 
@@ -30,7 +29,12 @@ before continue an destructive or important action.
 
 ## Authorisation Code
 
-    query:
+You may ask a confirmation code for Login, Registration or any other important action
+of you backend. You ask code for exact action and then confirm the action by sending
+returned code in headers for the action query.
+
+### query:
+
     mutation AskCode ( $action: String! ) {
         askcode ( action: $action ) {
             code_id
@@ -39,12 +43,18 @@ before continue an destructive or important action.
         }
     }
 
-    variables:
+You can return valid code in an answer of the request for debug purposes. For production
+returned code is null. For 2 factors security reasons you must send the code via alternative 
+communications providers: SMS, chat bots, email or others.  
+
+### variables:
+
     {
         "action":"login"
     }
 
-    return example:
+### return example:
+
     {
         "data": {
             "askcode": {
@@ -101,7 +111,7 @@ before continue an destructive or important action.
     }
 
 If a login action was successfull, the variable 'success' will content true.
-In other case it will content 'false' and 'error' will content text of the error. 
+In other case it will content 'false' and 'error' will content a text of the error. 
     
 ## User Profile
 
