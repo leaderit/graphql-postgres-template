@@ -58,7 +58,7 @@ The template provides a GraphQL API for this, described in
 
 
 
-### Files
+### Local Files Storage
 - Загрузка файлов через POST form/data средствами сервера Nginx
 - Доступ к данным о файлах в соответствии с ролью
 - Доступ к статическому содержимому файлов через NGINX с проверкой прав доступа через Backend
@@ -67,6 +67,18 @@ The template provides a GraphQL API for this, described in
 - Настраиваемые Файловые хранилища для данных пользователя, организации, общедоступные
 - Кеширование запросов доступа к файлам, сокращение времени проверки доступа до 3-х раза при повторных запросах
 - Ограничение загрузки содержимого файлов с проверкой прав доступа через Backend перед приемом содержимого файла.
+
+### Distributed Object Storage Min.IO
+
+- Integration Min.IO Storage API into backend server as standatd Fastify plugin
+- GraphQL: get direct object's url for upload
+- Upload an object via the direct url
+- Access to an object via the direct url
+- GraphQL: get direct object's url for access and download
+- GraphQL: copy an object
+- GraphQL: delete an object
+- GraphQL: move an object
+- Functional tests
 
 ### Applications
 
