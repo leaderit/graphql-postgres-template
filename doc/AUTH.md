@@ -48,7 +48,7 @@ Login Headers
 
 ## Authorisation
 
-    query:
+### query:
     query Login($password: String!, $username: String!, $scope: String = "", $client_secret: String = "", $client_id: String = "") 
     {
         login(password: $password, username: $username, client_id: $client_id, client_secret: $client_secret, scope: $scope) 
@@ -63,7 +63,7 @@ Login Headers
         }
     }
 
-    variables:
+### variables:
     {
         "client_id":"ios-v1",
         "client_secret":"supersecret",
@@ -72,7 +72,7 @@ Login Headers
         "password":"password1"
     }
 
-    return example:
+### return example:
     {
         "data": {
             "login": {
@@ -92,7 +92,8 @@ Login Headers
     
 ## User Profile
 
-    query:
+### query:
+
     query Profile {
         profile {
             user {
@@ -106,7 +107,8 @@ Login Headers
         }
     }
 
-    return example:
+### return example:
+
     {
         "data": {
             "profile": {
