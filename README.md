@@ -253,6 +253,13 @@ Details are in `img/nginx/default.conf`
 
     ./db-restore [file name]-backup.sql
 
+## Plans and TODOs
+
+I have plans to extend functionality of the template. I wrote it in the
+
+[TODO file](TODO.md)
+
+
 ## Copyrights
 
 (c) Valerii Grazhdankin, Moscow, Russia, 2020-2021
