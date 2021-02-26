@@ -10,7 +10,7 @@ const sendCode = async function (user, action, code){
     const { config } = fastify
     // Delay before send code 
     await new Promise(resolve => setTimeout(resolve, config.auth.codeSendDelay * 1000 ));
-    console.log( config.mail.admin )
+    // console.log( config.mail.admin )
     // awat 
     sendMail({
       from: config.mail.admin.from,     // адрес отправителя: '"Valeriy Grazhdankin" <ias-projects@mail.ru>'

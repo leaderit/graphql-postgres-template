@@ -1,7 +1,7 @@
 const crypto = require('crypto')
 const uuidv4 = require('uuid').v4;
 
-// Запрос кода подтверждения
+// Ask confirmation code for an action
 async function askCode(fastify, request, reply)
 {
     const codeLengths = {
@@ -37,7 +37,7 @@ async function askCode(fastify, request, reply)
             send_code = code
         }
     }
-    // Отправка кода
+    // Send the code via configured communication provider
     if ( send_code ) {
         await redis.multi()
         .setex('code/'+code_id, codeLife, JSON.stringify({ user_id, action, code }) )
@@ -45,7 +45,6 @@ async function askCode(fastify, request, reply)
         // put code into sender queue
         if ( fastify.hasDecorator('sendCode') ) await fastify.sendCode( user, action, code )
     }
-    // if ( debug == 0 )
     send_code = null
     return { 
         code_id,
@@ -54,17 +53,15 @@ async function askCode(fastify, request, reply)
     }
 }
 
-// Проверка кода подтверждения
+// Check the confirmation code for a request
+// return true/false
 const checkAuthCode = async function( request, action )
 {
     const fastify = this
     const { redis } = fastify
     const { config } = fastify
-    // const { authCode } = request
-    await new Promise(resolve => setTimeout(resolve, config.auth.codeCheckDelay * 1000 ));
-    console.log('CONTINUE', authCode )
 
-    const { authCode } = request
+    await new Promise(resolve => setTimeout(resolve, config.auth.codeCheckDelay * 1000 ));
     const res = await redis.get( 'code/'+request.authCode.code_id )
     if ( res ) {
         const data = JSON.parse( res )
@@ -73,7 +70,7 @@ const checkAuthCode = async function( request, action )
     return false;
 }
 
-// Проверка кода подтверждения
+// Cancel the confirmation code
 async function cancelCode( fastify, request, reply )
 {
     const { redis } = fastify

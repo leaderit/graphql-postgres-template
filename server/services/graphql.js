@@ -19,7 +19,7 @@ module.exports = function (fastify, opts, next) {
             'X-Hasura-Password': '', //user.password
           }
         })
-      console.log( 'hasura data = ', data )
+      // console.log( 'hasura data = ', data )
       reply.send( data )
     }
   })
@@ -27,10 +27,3 @@ module.exports = function (fastify, opts, next) {
   next()
 }
 
-// If you prefer async/await, use the following
-//
-// module.exports = async function (fastify, opts) {
-//   fastify.get('/', async function (request, reply) {
-//     return { root: true }
-//   })
-// }
