@@ -2,17 +2,30 @@
 
 ## Authorisation and Registration Queries
 
+For Authtorisation and registration queries you may provide 
+`Authorisation-Code` header. 
 
-Request Headers:
-{
-    Authorisation: {{token_type}} {{token}},    // Token from login request
-    Authorisation-Code: {{code_id}} {{code}}    // code_id from Asking code request and code, provided by user
-}
+For other queries you must provide `Authorisation` header with Bearer token, returned
+from Register or Login queries. If you business logic needs, you may
+send `Authorisation-Code` header and check confirmation of the operation
 
-Login Headers
-{
-    Authorisation-Code: {{code_id}} {{code}}
-}
+
+
+before continue an destructive or important action.
+
+### Request Headers:
+
+    {
+        Authorisation: {{token_type}} {{token}},    // Token from login request
+        Authorisation-Code: {{code_id}} {{code}}    // code_id from Asking code request and code, provided by user
+    }
+
+### Login Headers:
+
+    Login Headers
+    {
+        Authorisation-Code: {{code_id}} {{code}}
+    }
 
 
 ## Authorisation Code
@@ -87,22 +100,28 @@ Login Headers
         }
     }
 
-    If a login action was successfull, the variable 'success' will content true.
-    In other case it will content 'false' and 'error' will content text of the error. 
+If a login action was successfull, the variable 'success' will content true.
+In other case it will content 'false' and 'error' will content text of the error. 
     
 ## User Profile
+
+The query returns current user's profile with additional and expanded data. 
+You can configure any types and set of the data as you wish in your backend.
+
+You can request additional data from caches, databases, another queries and
+send it to the user in the request.
 
 ### query:
 
     query Profile {
         profile {
             user {
-            id
-            login
-            name
-            role {
+                id
+                login
                 name
-            }
+                role {
+                    name
+                }
             }
         }
     }
