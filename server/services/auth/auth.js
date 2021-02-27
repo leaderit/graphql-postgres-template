@@ -2,22 +2,23 @@
 const crypto = require('crypto')
 const auth = require('../../gql/auth.gql')
 
+// Create a token
 function createToken() {
     return crypto.randomBytes(32).toString('hex')
 }
 
-// Создание соли
+// Create a salt
 function createSalt() {
     return crypto.randomBytes(128).toString('base64')
 }
 
-// Функция вычисления хеша для имени, пароля и соли
+// Hash function for a user name, password and a salt
 function passwordHash( login, password, salt ) {
     return crypto.pbkdf2Sync(password+login, salt, 10000, 128, 'sha512').toString('base64')
 }
 
 
-//  Создание сессии в Redis
+//  Create a session in Redis
 async function createSession( fastify, user )
 {
     const { redis } = fastify
@@ -99,6 +100,8 @@ async function login( fastify, request, reply ) {
                 name
                 password
                 salt
+                email
+                phone
                 org_id
                 role {
                   access
@@ -127,7 +130,7 @@ async function login( fastify, request, reply ) {
     if ( data.data ) {
         if ( data.data.users.length == 1 && data.data.applications.length == 1 ) {
             let user = data.data.users[0]
-            // Проверить хеш пароля 
+            // Check a password hash 
             let password = login.password
             if ( user.salt ) password = passwordHash( login.username, login.password, user.salt )
             if ( !(user.password === password)) user = null
@@ -300,9 +303,9 @@ async function register(fastify, request, reply){
                     login
                     name
                     role {
-                    access
-                    id
-                    name
+                        access
+                        id
+                        name
                     }          
                 }
             }
